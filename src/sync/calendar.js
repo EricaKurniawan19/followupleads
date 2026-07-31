@@ -91,4 +91,77 @@ async function fetchCalendarLeads(calendarConfig, { companyDomain, since } = {})
   return eventsToLeads(events, { companyDomain });
 }
 
-module.exports = { fetchCalendarLeads, eventsToLeads, domainOf, listCompletedEvents };
+/**
+ * Pure transform: raw Calendar API events -> upcoming external meetings.
+ * Informational only — these are never turned into leads (nothing to follow
+ * up on until the meeting has actually happened).
+ */
+function upcomingExternalMeetings(events, { companyDomain, now = new Date() }) {
+  const domain = (companyDomain || '').toLowerCase();
+  const results = [];
+
+  for (const event of events || []) {
+    if (event.status === 'cancelled') continue;
+
+    const startIso = event.start && event.start.dateTime;
+    if (!startIso) continue; // skip all-day events
+    if (new Date(startIso) < now) continue; // already started/in progress
+
+    const attendees = (event.attendees || []).filter((a) => !a.resource && !a.self);
+    const external = attendees.filter((a) => domainOf(a.email) !== domain);
+    if (external.length === 0) continue;
+
+    results.push({
+      summary: event.summary || '(no title)',
+      startTime: startIso,
+      attendees: external.map((a) => ({ name: a.displayName || a.email, email: a.email })),
+    });
+  }
+
+  results.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+  return results;
+}
+
+async function listUpcomingEvents(calendarConfig, { daysAhead = 14 } = {}) {
+  const { clientId, clientSecret, refreshToken, redirectUri } = calendarConfig;
+  const auth = buildOAuthClient({ clientId, clientSecret, redirectUri, refreshToken });
+  const calendar = google.calendar({ version: 'v3', auth });
+
+  const now = new Date();
+  const timeMax = new Date(now.getTime() + daysAhead * 86400000);
+
+  const events = [];
+  let pageToken;
+  do {
+    const res = await calendar.events.list({
+      calendarId: 'primary',
+      timeMin: now.toISOString(),
+      timeMax: timeMax.toISOString(),
+      singleEvents: true,
+      orderBy: 'startTime',
+      maxResults: 250,
+      pageToken,
+    });
+    events.push(...(res.data.items || []));
+    pageToken = res.data.nextPageToken;
+  } while (pageToken);
+
+  return events;
+}
+
+async function fetchUpcomingExternalMeetings(calendarConfig, { companyDomain, daysAhead } = {}) {
+  const { clientId, clientSecret, refreshToken } = calendarConfig || {};
+  if (!clientId || !clientSecret || !refreshToken) return [];
+  const events = await listUpcomingEvents(calendarConfig, { daysAhead });
+  return upcomingExternalMeetings(events, { companyDomain });
+}
+
+module.exports = {
+  fetchCalendarLeads,
+  eventsToLeads,
+  domainOf,
+  listCompletedEvents,
+  fetchUpcomingExternalMeetings,
+  upcomingExternalMeetings,
+  listUpcomingEvents,
+};

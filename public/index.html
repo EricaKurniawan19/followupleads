@@ -181,6 +181,29 @@
   }
   .panel, .card{ box-shadow: 0 1px 2px rgba(35,40,31,0.04); }
   @keyframes spin{to{transform:rotate(360deg);}}
+
+  .upcoming-row{
+    display:flex;gap:14px;align-items:center;
+    background:var(--surface);border:1px solid var(--edge);
+    border-left:4px solid var(--sage);
+    border-radius:4px 10px 10px 4px;padding:11px 16px;
+  }
+  .upcoming-when{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--sage);
+    width:120px;flex-shrink:0;
+  }
+  .week-row{display:flex;align-items:center;gap:10px;}
+  .week-row + .week-row{margin-top:8px;}
+  .week-label{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);
+    width:96px;flex-shrink:0;
+  }
+  .week-bar-track{flex:1;background:var(--surface-2);border-radius:5px;height:18px;overflow:hidden;}
+  .week-bar-fill{background:var(--brass);height:100%;border-radius:5px;min-width:3px;}
+  .week-count{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);
+    width:24px;text-align:right;flex-shrink:0;
+  }
 </style>
 </head>
 <body>
@@ -255,6 +278,14 @@
     <div id="syncStatus"></div>
   </div>
 
+  <div class="section-title">Upcoming external meetings</div>
+  <div id="upcomingPanel" class="cards"></div>
+
+  <div class="section-title">Activity per week</div>
+  <div class="panel">
+    <div id="weeklyActivity"></div>
+  </div>
+
   <div class="section-title">Ledger</div>
   <div class="btnrow" style="margin-bottom:14px;">
     <button id="tabFollowups" class="primary">Follow-ups</button>
@@ -322,6 +353,69 @@ async function loadState(){
     ? `+${summary.added} new, ${summary.updated} updated`
     : 'no runs yet';
   render();
+  renderWeeklyActivity();
+  loadUpcoming();
+}
+
+async function loadUpcoming(){
+  const panel = document.getElementById('upcomingPanel');
+  panel.innerHTML = `<div class="empty">Checking calendar…</div>`;
+  try{
+    const meetings = await api('/api/upcoming');
+    if(!meetings.length){
+      panel.innerHTML = `<div class="empty">No upcoming external meetings in the next 14 days.</div>`;
+      return;
+    }
+    panel.innerHTML = meetings.map(m => {
+      const when = new Date(m.startTime);
+      const whenStr = when.toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+      const names = m.attendees.map(a => a.name).join(', ');
+      return `
+        <div class="upcoming-row">
+          <div class="upcoming-when">${escapeHtml(whenStr)}</div>
+          <div>
+            <div class="lead-name" style="font-size:15px;">${escapeHtml(names)}</div>
+            <div class="meta">${escapeHtml(m.summary)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }catch(err){
+    panel.innerHTML = `<div class="empty">Couldn't check calendar: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderWeeklyActivity(){
+  const el = document.getElementById('weeklyActivity');
+  if(!state.leads.length){
+    el.innerHTML = `<div class="hint" style="margin-top:0;">No activity yet.</div>`;
+    return;
+  }
+  function weekStart(dateStr){
+    const d = new Date(dateStr+'T00:00:00Z');
+    const day = d.getUTCDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setUTCDate(d.getUTCDate() + diff);
+    return d.toISOString().slice(0,10);
+  }
+  const counts = new Map();
+  for(const l of state.leads){
+    const wk = weekStart(l.meetingDate);
+    counts.set(wk, (counts.get(wk)||0) + 1);
+  }
+  const weeks = Array.from(counts.entries()).sort((a,b) => new Date(b[0]) - new Date(a[0])).slice(0, 8);
+  const max = Math.max(...weeks.map(w => w[1]));
+  el.innerHTML = weeks.map(([wk, count]) => {
+    const label = new Date(wk+'T00:00:00Z').toLocaleDateString(undefined, { month:'short', day:'numeric' });
+    const pct = Math.round((count/max)*100);
+    return `
+      <div class="week-row">
+        <div class="week-label">wk of ${escapeHtml(label)}</div>
+        <div class="week-bar-track"><div class="week-bar-fill" style="width:${pct}%;"></div></div>
+        <div class="week-count">${count}</div>
+      </div>
+    `;
+  }).join('');
 }
 
 function statusFor(lead){

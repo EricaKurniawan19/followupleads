@@ -2,7 +2,9 @@ const express = require('express');
 const path = require('path');
 const { randomUUID } = require('crypto');
 const store = require('./store');
+const config = require('./config');
 const { runSync } = require('./sync/runSync');
+const { fetchUpcomingExternalMeetings } = require('./sync/calendar');
 const { addDays, todayISO } = require('./utils/dates');
 
 const app = express();
@@ -94,6 +96,19 @@ app.post('/api/leads/bulk-mark-overdue-done', async (req, res) => {
   }
   await store.save();
   res.json({ marked });
+});
+
+app.get('/api/upcoming', async (req, res) => {
+  try {
+    const upcoming = await fetchUpcomingExternalMeetings(config.calendar, {
+      companyDomain: config.companyDomain,
+      daysAhead: 14,
+    });
+    res.json(upcoming);
+  } catch (err) {
+    console.error('[api] upcoming fetch failed:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/sync', async (req, res) => {
