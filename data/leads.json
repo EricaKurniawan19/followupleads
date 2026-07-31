@@ -4,9 +4,15 @@
   },
   "leads": [],
   "meta": {
-    "lastCapsuleSyncAt": null,
-    "lastCalendarSyncAt": null,
-    "lastRunAt": null,
-    "lastRunSummary": null
+    "lastCapsuleSyncAt": "2026-07-31T08:35:42.074Z",
+    "lastCalendarSyncAt": "2026-07-31T08:35:42.074Z",
+    "lastRunAt": "2026-07-31T08:35:42.074Z",
+    "lastRunSummary": {
+      "added": 0,
+      "updated": 0,
+      "unchanged": 0,
+      "capsuleFound": 0,
+      "calendarFound": 0
+    }
   }
 }
