@@ -99,35 +99,36 @@
     background:var(--surface);
     border:1px solid var(--edge);
     border-radius:4px 10px 10px 4px;
-    padding:16px 18px 16px 22px;
-    display:flex;
-    gap:16px;
-    align-items:flex-start;
+    padding:14px 16px;
     border-left:4px solid var(--sage-dim);
   }
   .card.overdue{border-left-color:var(--rust);}
   .card.soon{border-left-color:var(--amber);}
   .card.done{opacity:0.55;}
-  .stamp{
+  .due-badge{
     font-family:'JetBrains Mono',monospace;
     font-size:11px;
-    font-weight:500;
-    color:var(--ink);
-    border:1px solid var(--edge);
-    border-radius:50%;
-    width:56px;height:56px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-weight:600;
+    border-radius:20px;
+    padding:3px 10px;
+    white-space:nowrap;
     flex-shrink:0;
-    text-align:center;
-    line-height:1.15;
+    border:1px solid var(--edge);
+    color:var(--ink-dim);
+    background:var(--surface-2);
   }
-  .card.overdue .stamp{border-color:var(--rust);color:var(--rust);}
-  .card.soon .stamp{border-color:var(--amber);color:var(--amber);}
-  .card.upcoming .stamp{border-color:var(--sage);color:var(--sage);}
-  .stamp b{font-size:16px;font-family:'Space Grotesk',sans-serif;}
-  .card-body{flex:1;min-width:0;}
-  .card-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;}
+  .card.overdue .due-badge{background:#FBEAE6;border-color:#E8B8A8;color:var(--rust);}
+  .card.soon .due-badge{background:#FCF3E1;border-color:#E9CE95;color:#8A5A0F;}
+  .card.upcoming .due-badge{background:var(--surface-2);border-color:var(--sage-dim);color:var(--sage);}
+  .card.done .due-badge{color:var(--ink-dim);}
+  .card-body{min-width:0;}
+  .card-top{display:flex;justify-content:space-between;gap:10px 8px;flex-wrap:wrap;align-items:center;}
+  .card-top-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;}
   .lead-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;}
+  @media (max-width:480px){
+    .lead-name{font-size:16px;}
+    .card{padding:12px 14px;}
+  }
   .source-tag{
     font-family:'JetBrains Mono',monospace;
     font-size:10px;
@@ -425,12 +426,12 @@ function statusFor(lead){
   return 'upcoming';
 }
 
-function stampText(lead){
+function dueBadgeText(lead){
   const d = daysBetween(todayISO(), lead.followUpDate);
-  if(lead.status === 'done') return { big: '✓', small: 'done' };
-  if(d < 0) return { big: Math.abs(d), small: d===-1? 'day late':'days late' };
-  if(d === 0) return { big: 'now', small: 'today' };
-  return { big: d, small: d===1? 'day left':'days left' };
+  if(lead.status === 'done') return '✓ done';
+  if(d < 0) return `${Math.abs(d)} ${d===-1? 'day':'days'} late`;
+  if(d === 0) return 'due today';
+  return `${d} ${d===1? 'day':'days'} left`;
 }
 
 let sortMode = 'followup';
@@ -449,14 +450,15 @@ function render(){
   }
   for(const lead of sorted){
     const st = statusFor(lead);
-    const stamp = stampText(lead);
     const el = document.createElement('div');
     el.className = 'card ' + st;
     el.innerHTML = `
-      <div class="stamp"><b>${stamp.big}</b><span>${stamp.small}</span></div>
       <div class="card-body">
         <div class="card-top">
-          <span class="lead-name">${escapeHtml(lead.name)}</span>
+          <div class="card-top-left">
+            <span class="lead-name">${escapeHtml(lead.name)}</span>
+            <span class="due-badge">${dueBadgeText(lead)}</span>
+          </div>
           <span class="source-tag">${lead.source}</span>
         </div>
         <div class="meta">met ${lead.meetingDate} &middot; follow up by ${lead.followUpDate}</div>
