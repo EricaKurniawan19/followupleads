@@ -2,16 +2,824 @@
   "settings": {
     "followUpDays": 7
   },
-  "leads": [],
+  "leads": [
+    {
+      "id": "473034c5-e462-4dc5-9423-8bab8457fa41",
+      "name": "Matthew Choi",
+      "source": "capsule",
+      "meetingDate": "2026-07-30",
+      "followUpDate": "2026-08-06",
+      "notes": "Tiffany needed to catch up, had a Zoom just now. He has a Palo Alto office (Tiffany should visit). 2 types of funds (2nd: growth fund for Seed A-B, 3-7M USD; other is uni fund focused on math tech & deep tech, offer 2M). He'd like to introduce us to a VC he used.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:0"
+    },
+    {
+      "id": "675d5b4e-4b83-4617-908a-e7da788e66e5",
+      "name": "Kanishk Munoth",
+      "source": "capsule",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "Followed up again, also sent Calendly in case he prefers a quick call.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/kanishkmunoth/",
+      "tags": [],
+      "sourceKey": "capsule:manual-import-31jul:1"
+    },
+    {
+      "id": "2a728808-066a-471a-90ba-c9dd6be76f84",
+      "name": "Shabeera Shaharuzzaman",
+      "source": "capsule",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "From Leadlab, replied, invited her to test our product and asked for feedback. Sent deck and demo video.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Leadlab",
+        "Not Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:2"
+    },
+    {
+      "id": "8534ee02-f908-4660-8fb1-d6bd063454d5",
+      "name": "William Sage",
+      "source": "capsule",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "From Leadlab, replied, invited him to test our product, attached deck, demo link, and Calendly.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Leadlab",
+        "Not Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:3"
+    },
+    {
+      "id": "b4dc8640-5a95-415d-b370-e34c6f7a9e41",
+      "name": "Hong Ear",
+      "source": "capsule",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "From Leadlab, replied, sent demo video and deck, invited him to test our product.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Leadlab",
+        "Not Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:4"
+    },
+    {
+      "id": "ec7c14d1-2106-4a8d-b0b1-d05f31709cfc",
+      "name": "Ken Deriada",
+      "source": "capsule",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "Sent a follow-up email with our deck and demo link about FinFAST.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Email"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:5"
+    },
+    {
+      "id": "070f61fd-0bec-49e9-9c9d-40ff5f1c4940",
+      "name": "Nathan Wongkar",
+      "source": "capsule",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "Sent a one-pager for tailored services, deck, and demo video link of FinFAST via email.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/nathanwongkar/",
+      "tags": [
+        "Email",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:6"
+    },
+    {
+      "id": "db4f0812-11f1-4d40-b401-64e6ac8a4c33",
+      "name": "Ming Lo",
+      "source": "capsule",
+      "meetingDate": "2026-07-21",
+      "followUpDate": "2026-07-28",
+      "notes": "Sent a follow-up email providing deck and demo video, as requested. Also had a call — he can help with news data/resources that are expensive to get, and can match us with someone from HKUST faculty. Programme name is OKT.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Email",
+        "Call",
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:7"
+    },
+    {
+      "id": "33a65c96-ca98-4108-bbd4-b1b4f64723d3",
+      "name": "Othmane Maacha",
+      "source": "capsule",
+      "meetingDate": "2026-07-20",
+      "followUpDate": "2026-07-27",
+      "notes": "Had a call with Tiffany.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/omaacha/",
+      "tags": [
+        "Call"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:8"
+    },
+    {
+      "id": "8dc4f2a6-94ef-46ad-81a0-35af3d7ad70d",
+      "name": "Ming Lo",
+      "source": "capsule",
+      "meetingDate": "2026-07-17",
+      "followUpDate": "2026-07-24",
+      "notes": "Ming Lo sent an email to Tiffany (met during her HKUST talk). Sent info about OKT, and we've sent Calendly for a follow-up Zoom.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Email",
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:9"
+    },
+    {
+      "id": "2c465829-e1bb-430f-9d3c-89ec4481d9c3",
+      "name": "Joseph Czaja",
+      "source": "capsule",
+      "meetingDate": "2026-07-17",
+      "followUpDate": "2026-07-24",
+      "notes": "Replied to his message (also from Leadlab) sending deck, demo link, and Calendly. Family office, selective on investments, but interested in the company/tech.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Leadlab",
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:10"
+    },
+    {
+      "id": "4ca7c95e-a1f1-4668-9aa3-42bb94200d79",
+      "name": "Kuan Tan",
+      "source": "capsule",
+      "meetingDate": "2026-07-17",
+      "followUpDate": "2026-07-24",
+      "notes": "From Leadlab, he asked for our deck. Sent deck, demo video, and Calendly link.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Leadlab",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:11"
+    },
+    {
+      "id": "7dc60a52-a2f9-4839-b43f-0b65d213e799",
+      "name": "Roni Mak",
+      "source": "capsule",
+      "meetingDate": "2026-07-17",
+      "followUpDate": "2026-07-24",
+      "notes": "Replied to her message by sending Calendly link. Team focuses on credit investing, no VC mandate currently, but impressed with our progress.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "capsule:manual-import-31jul:12"
+    },
+    {
+      "id": "470e4011-50fc-49b8-b699-8cfea0965754",
+      "name": "Ken Deriada",
+      "source": "capsule",
+      "meetingDate": "2026-07-16",
+      "followUpDate": "2026-07-23",
+      "notes": "Had a call — discussed how they can help with fundraising, though pricing is quite high and not based on successful cases.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:13"
+    },
+    {
+      "id": "2bdef4ae-69a0-4cfe-b2a0-02b8e9bdad9c",
+      "name": "Nathan Wongkar",
+      "source": "capsule",
+      "meetingDate": "2026-07-16",
+      "followUpDate": "2026-07-23",
+      "notes": "Tiffany had a Zoom meeting with Nathan. Not currently investing in FinFAST/FinAnalytics — focus is Seed A / Supply Chain. Follow up after a week on potential collaboration.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/nathanwongkar/",
+      "tags": [
+        "Call",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:14"
+    },
+    {
+      "id": "c4d21bf5-9469-4a42-b1d8-b760f47f0a52",
+      "name": "Senzhao Zhang",
+      "source": "capsule",
+      "meetingDate": "2026-07-13",
+      "followUpDate": "2026-07-20",
+      "notes": "From Leadlab, interested to know more. Sent materials via email — he replied, will take a closer look.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Leadlab",
+        "Email"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:15"
+    },
+    {
+      "id": "90b5d42c-cf0d-44e6-9a2a-7d29a852a421",
+      "name": "Scott Rice",
+      "source": "capsule",
+      "meetingDate": "2026-07-13",
+      "followUpDate": "2026-07-20",
+      "notes": "From Leadlab (Kai's account). Interested, sent Calendly, never responded. Sent another follow-up message.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/scottricehrprofessional/",
+      "tags": [
+        "Leadlab"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:16"
+    },
+    {
+      "id": "ec135d39-977b-4f1b-9c63-ee24a16b6ac0",
+      "name": "Michael Krieger",
+      "source": "capsule",
+      "meetingDate": "2026-07-12",
+      "followUpDate": "2026-07-19",
+      "notes": "Connected via LinkedIn, promotes his SEO product. Erica sent an email re: interest, also sent Calendly. Hebe will join the meeting.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/boeykaijie/",
+      "tags": [
+        "LinkedIn",
+        "Email"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:17"
+    },
+    {
+      "id": "607d2dca-18ca-414c-8f07-7d78c5af4d03",
+      "name": "Frances Marvel",
+      "source": "capsule",
+      "meetingDate": "2026-07-12",
+      "followUpDate": "2026-07-19",
+      "notes": "Messaged through LinkedIn. Sent Calendly from Tiffany's LinkedIn.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/francesmarvel/",
+      "tags": [
+        "LinkedIn",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:18"
+    },
+    {
+      "id": "61f87b08-259f-41e0-8004-3a68aaf04300",
+      "name": "Kanishk Munoth",
+      "source": "capsule",
+      "meetingDate": "2026-07-12",
+      "followUpDate": "2026-07-19",
+      "notes": "From Leadlab — he can connect Tiffany to US investors (currently only invests in India). Requested an in-person meeting late next week.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/kanishkmunoth/",
+      "tags": [
+        "Leadlab"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:19"
+    },
+    {
+      "id": "d12bd1a3-66e7-4305-b377-018852ff66a4",
+      "name": "Paul Johnson",
+      "source": "capsule",
+      "meetingDate": "2026-07-12",
+      "followUpDate": "2026-07-19",
+      "notes": "From Leadlab, messaged through LinkedIn. Shared our deck and demo video.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/paul-johnsjr-/",
+      "tags": [
+        "Leadlab",
+        "LinkedIn",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:20"
+    },
+    {
+      "id": "09abf1b4-c9c5-40ed-82f5-b4aa910e75c2",
+      "name": "Nathan Wongkar",
+      "source": "capsule",
+      "meetingDate": "2026-07-10",
+      "followUpDate": "2026-07-17",
+      "notes": "Connected through Leadlab, messaged via LinkedIn — seems interested, booked a call with Tiffany.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/nathanwongkar/",
+      "tags": [
+        "Leadlab",
+        "LinkedIn",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:21"
+    },
+    {
+      "id": "dcaa06d2-52de-4717-bdfd-c895804f9073",
+      "name": "Othmane Maacha",
+      "source": "capsule",
+      "meetingDate": "2026-07-10",
+      "followUpDate": "2026-07-17",
+      "notes": "From Leadlab, connected via LinkedIn. Initiated a call with Tiffany after we sent deck/demo. Calendly sent.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/omaacha/",
+      "tags": [
+        "Leadlab",
+        "LinkedIn"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:22"
+    },
+    {
+      "id": "0d5c7129-9d9a-4513-bd0c-63a354a6558a",
+      "name": "Kai Boey",
+      "source": "capsule",
+      "meetingDate": "2026-07-10",
+      "followUpDate": "2026-07-17",
+      "notes": "From Leadlab, sent message via LinkedIn sharing deck and Calendly for a call with Tiffany.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/boeykaijie/",
+      "tags": [
+        "Leadlab",
+        "LinkedIn",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:23"
+    },
+    {
+      "id": "8bca7baa-0c83-429a-9bf3-5f2e4c18f2f7",
+      "name": "Shenzhao Zhang",
+      "source": "capsule",
+      "meetingDate": "2026-07-10",
+      "followUpDate": "2026-07-17",
+      "notes": "From Leadlab, messaged via LinkedIn — interested to understand better, but still an intern at a VC. Sent deck/demo via Gmail.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/ryanzhang0201/",
+      "tags": [
+        "Leadlab",
+        "LinkedIn",
+        "Not Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:24"
+    },
+    {
+      "id": "18e0bbb2-ab44-408c-aae8-05b123e08e9b",
+      "name": "Nachiket Midha",
+      "source": "capsule",
+      "meetingDate": "2026-06-17",
+      "followUpDate": "2026-06-24",
+      "notes": "Potentially quite useful source/contact.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:25"
+    },
+    {
+      "id": "e1db8dea-feda-47fd-886d-1ef34334ffa2",
+      "name": "Lutz G Tillmann",
+      "source": "capsule",
+      "meetingDate": "2026-06-08",
+      "followUpDate": "2026-06-15",
+      "notes": "Tiffany messaged via LinkedIn — both spent time at IMD, wants to learn more and see if there's shared investment thesis.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "LinkedIn",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:26"
+    },
+    {
+      "id": "2b9617fe-ca0e-4dd7-88b4-7fc0221a1c4c",
+      "name": "Nate Lloyd",
+      "source": "capsule",
+      "meetingDate": "2026-05-26",
+      "followUpDate": "2026-06-02",
+      "notes": "Tiffany had an online meeting with Nate. He seems interested in FinFAST as a solution.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:27"
+    },
+    {
+      "id": "b096373b-25d4-4591-b696-67e4131145ac",
+      "name": "Henry Gewecke",
+      "source": "capsule",
+      "meetingDate": "2026-05-19",
+      "followUpDate": "2026-05-26",
+      "notes": "Tiffany had a meeting with Henry online.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:28"
+    },
+    {
+      "id": "75d60648-557b-4901-a567-41ace807bdc4",
+      "name": "Jacob Greenspon",
+      "source": "capsule",
+      "meetingDate": "2026-05-18",
+      "followUpDate": "2026-05-25",
+      "notes": "Tiffany had a meeting with Jacob in person.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "In person"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:29"
+    },
+    {
+      "id": "713bf432-4698-4108-a330-08f15c31645a",
+      "name": "Wang Zong",
+      "source": "capsule",
+      "meetingDate": "2026-05-18",
+      "followUpDate": "2026-05-25",
+      "notes": "Tiffany had a meeting with Wang Zong online.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:30"
+    },
+    {
+      "id": "6b4fb381-b15a-4c45-84cb-14c601aad6fe",
+      "name": "Rika Kamijima Tsunoda",
+      "source": "capsule",
+      "meetingDate": "2026-05-17",
+      "followUpDate": "2026-05-24",
+      "notes": "Tiffany reached out via WhatsApp for a chat before Rika leaves.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "WhatsApp"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:31"
+    },
+    {
+      "id": "c5a74413-ce73-43ab-85bd-efd4a5812f91",
+      "name": "Brandon Hoffman",
+      "source": "capsule",
+      "meetingDate": "2026-05-17",
+      "followUpDate": "2026-05-24",
+      "notes": "Tiffany messaged via LinkedIn (met at HKS reunion), asked if he'd like to chat in the next 2 weeks.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "LinkedIn"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:32"
+    },
+    {
+      "id": "42743663-4deb-4f7f-bab7-e769e4acad1e",
+      "name": "Albert King",
+      "source": "capsule",
+      "meetingDate": "2026-05-14",
+      "followUpDate": "2026-05-21",
+      "notes": "Tiffany chatted via WeChat, asking about availability next week.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "WeChat"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:33"
+    },
+    {
+      "id": "9ace2aaf-14f4-4f2f-b0cf-d6ed45c58553",
+      "name": "Jacob Greenspon",
+      "source": "capsule",
+      "meetingDate": "2026-05-14",
+      "followUpDate": "2026-05-21",
+      "notes": "Tiffany messaged on LinkedIn asking if he's in town next week (HKS reunion).",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "LinkedIn"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:34"
+    },
+    {
+      "id": "a2762ef7-fa37-47ac-a85a-7618fecbb019",
+      "name": "Katie Parry",
+      "source": "capsule",
+      "meetingDate": "2026-05-12",
+      "followUpDate": "2026-05-19",
+      "notes": "Tiffany messaged via LinkedIn, suggested catching up if in London.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "LinkedIn",
+        "Moderate"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:35"
+    },
+    {
+      "id": "571607a6-04f7-4b75-93f5-db1608c3dd4d",
+      "name": "Nachiket Midha",
+      "source": "capsule",
+      "meetingDate": "2026-05-08",
+      "followUpDate": "2026-05-15",
+      "notes": "Tiffany chatted via LinkedIn, scheduling an online meeting via Calendly.",
+      "status": "pending",
+      "email": "",
+      "phone": "+1 571 299 0612",
+      "linkedin": "",
+      "tags": [
+        "LinkedIn",
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:36"
+    },
+    {
+      "id": "d37bb6e9-6f21-4847-9e06-3838b7ac1ada",
+      "name": "Yuchen Xia",
+      "source": "capsule",
+      "meetingDate": "2026-04-30",
+      "followUpDate": "2026-05-07",
+      "notes": "Tiffany had an in-person meeting — useful advice on commercialization, particularly finding a product client/user feedback loop. Next step: meet again, get more specific.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "In person"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:37"
+    },
+    {
+      "id": "9aefff4e-177d-465e-ab2d-9b3d70fb7d27",
+      "name": "Mingyuan (Eddie) Huang",
+      "source": "capsule",
+      "meetingDate": "2026-04-30",
+      "followUpDate": "2026-05-07",
+      "notes": "Tiffany had a meeting with Mingyuan — not that useful.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call",
+        "Not Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:38"
+    },
+    {
+      "id": "85705b92-ddc9-4a5f-8041-24bc3c39e36d",
+      "name": "Anna Costello",
+      "source": "capsule",
+      "meetingDate": "2026-04-30",
+      "followUpDate": "2026-05-07",
+      "notes": "Tiffany had a Zoom call. Small/medium firm, possibility to collaborate. Recap: banking chase fees ($40 wire, poor FX rate), no formal accounting solution — tracking done manually.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Call",
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:39"
+    },
+    {
+      "id": "1799095d-e0fe-4f45-955c-86e3f5c0ebad",
+      "name": "Lili Zhu",
+      "source": "capsule",
+      "meetingDate": "2026-04-29",
+      "followUpDate": "2026-05-06",
+      "notes": "Tiffany had a meeting with Lili in person.",
+      "status": "pending",
+      "email": "lilizhusea@gmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "In person"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:40"
+    },
+    {
+      "id": "308479c0-ad47-4fd0-93a4-ddd9f68febe0",
+      "name": "Yuyang Zhao",
+      "source": "capsule",
+      "meetingDate": "2026-04-29",
+      "followUpDate": "2026-05-06",
+      "notes": "Tiffany chatted via WeChat about another quant platform (qmfquant.com), wants to connect with the founder.",
+      "status": "pending",
+      "email": "zhaoyuyang477@gmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "WeChat",
+        "Important"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:41"
+    },
+    {
+      "id": "9ed070b5-5567-4fca-a1e8-70b8723834f3",
+      "name": "Albert King",
+      "source": "capsule",
+      "meetingDate": "2026-04-29",
+      "followUpDate": "2026-05-06",
+      "notes": "Tiffany was introduced to Dr Albert King via WeChat.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "WeChat"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:42"
+    },
+    {
+      "id": "c5a78e4a-e875-475a-9f05-4a4e0a0f622f",
+      "name": "Erik Lueth",
+      "source": "capsule",
+      "meetingDate": "2026-04-29",
+      "followUpDate": "2026-05-06",
+      "notes": "Tiffany sent a Telegram message asking about a chat in person.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "Telegram"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:43"
+    },
+    {
+      "id": "b6b5957b-b303-48e1-b839-5a1b6be45845",
+      "name": "Ramachandran",
+      "source": "capsule",
+      "meetingDate": "2026-04-28",
+      "followUpDate": "2026-05-05",
+      "notes": "Ex-Citibank Vietnam country head, now retired & doing a startup. Tiffany sent a WhatsApp message with deck attached.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "WhatsApp"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:44"
+    },
+    {
+      "id": "26468d8b-a929-4fa7-a15a-b78e17d2f25b",
+      "name": "Shi Yu",
+      "source": "capsule",
+      "meetingDate": "2026-04-28",
+      "followUpDate": "2026-05-05",
+      "notes": "Tiffany messaged via WeChat, sent demo video and deck. Meeting also planned for 30 April.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "WeChat"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:45"
+    },
+    {
+      "id": "2c288c6f-3568-44dd-8157-25960d0e412f",
+      "name": "Sanjana Iyer",
+      "source": "capsule",
+      "meetingDate": "2026-04-28",
+      "followUpDate": "2026-05-05",
+      "notes": "Tiffany had an in-person meeting with Sanjana.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "In person"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:46"
+    },
+    {
+      "id": "9aa8524d-2d46-47df-8bc9-5e0c9ccd2047",
+      "name": "Frederike Feld",
+      "source": "capsule",
+      "meetingDate": "2026-04-28",
+      "followUpDate": "2026-05-05",
+      "notes": "Tiffany had a meeting with Frederike.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "capsule:manual-import-31jul:47"
+    },
+    {
+      "id": "29f5527b-183a-4f4e-939c-639755fe8988",
+      "name": "Matthias Knobloch",
+      "source": "capsule",
+      "meetingDate": "2026-04-28",
+      "followUpDate": "2026-05-05",
+      "notes": "Tiffany sent a LinkedIn message sharing a short demo video re: helping teams pick up early macro signals.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [
+        "LinkedIn"
+      ],
+      "sourceKey": "capsule:manual-import-31jul:48"
+    }
+  ],
   "meta": {
     "lastCapsuleSyncAt": "2026-07-31T08:35:42.074Z",
     "lastCalendarSyncAt": "2026-07-31T08:35:42.074Z",
-    "lastRunAt": "2026-07-31T08:35:42.074Z",
+    "lastRunAt": "2026-07-31T08:47:22.503Z",
     "lastRunSummary": {
-      "added": 0,
+      "added": 49,
       "updated": 0,
       "unchanged": 0,
-      "capsuleFound": 0,
+      "capsuleFound": 49,
       "calendarFound": 0
     }
   }
