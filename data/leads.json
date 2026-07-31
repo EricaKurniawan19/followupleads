@@ -879,6 +879,20 @@
       "linkedin": "",
       "tags": [],
       "sourceKey": "calendar:0815q3ak0be57nc2hdd5f5ke83:tl3176@stanford.edu"
+    },
+    {
+      "id": "1ca03e6b-8d1b-4135-b5f7-61d5e1e6d21a",
+      "name": "Alan Chan",
+      "source": "manual",
+      "meetingDate": "2026-07-29",
+      "followUpDate": "2026-08-05",
+      "notes": "",
+      "status": "pending",
+      "email": "alanchan@metisfinancials.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "meta": {
