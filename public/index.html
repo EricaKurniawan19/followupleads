@@ -472,7 +472,6 @@ function render(){
         <div class="card-actions">
           ${lead.status!=='done' ? `<button data-act="done" data-id="${lead.id}">Mark followed up</button>` : `<button data-act="undo" data-id="${lead.id}">Undo</button>`}
           ${lead.status!=='done' ? `<button data-act="snooze" data-id="${lead.id}">Snooze 3 days</button>` : ''}
-          <button data-act="delete" data-id="${lead.id}" class="ghost">Remove</button>
         </div>
       </div>
     `;
@@ -500,7 +499,6 @@ document.getElementById('cards').addEventListener('click', async (e)=>{
   if(btn.dataset.act === 'done'){ lead.status = 'done'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'done' }) }); }
   if(btn.dataset.act === 'undo'){ lead.status = 'pending'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'pending' }) }); }
   if(btn.dataset.act === 'snooze'){ lead.followUpDate = addDays(lead.followUpDate, 3); await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ followUpDate: lead.followUpDate }) }); }
-  if(btn.dataset.act === 'delete'){ state.leads = state.leads.filter(l=>l.id!==id); await api(`/api/leads/${id}`, { method:'DELETE' }); }
   render();
 });
 
