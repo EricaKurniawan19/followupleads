@@ -554,7 +554,7 @@ document.getElementById('syncNowBtn').addEventListener('click', async ()=>{
   try{
     const summary = await api('/api/sync', { method:'POST' });
     await loadState();
-    setStatus(`Synced — ${summary.added} new lead(s), ${summary.updated} updated (found ${summary.capsuleFound} Capsule note(s), ${summary.calendarFound} calendar meeting(s)).`, 'ok');
+    setStatus('Synced', 'ok');
   }catch(err){
     setStatus(`Sync failed: ${escapeHtml(err.message)}`, 'err');
   }finally{
