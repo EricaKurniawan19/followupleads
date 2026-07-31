@@ -938,15 +938,15 @@
     }
   ],
   "meta": {
-    "lastCapsuleSyncAt": "2026-07-31T08:35:42.074Z",
-    "lastCalendarSyncAt": "2026-07-31T09:07:33.989Z",
-    "lastRunAt": "2026-07-31T09:07:33.989Z",
+    "lastCapsuleSyncAt": "2026-07-31T09:13:20.193Z",
+    "lastCalendarSyncAt": "2026-07-31T09:13:20.193Z",
+    "lastRunAt": "2026-07-31T09:13:20.193Z",
     "lastRunSummary": {
-      "added": 9,
+      "added": 0,
       "updated": 0,
       "unchanged": 0,
-      "capsuleFound": 49,
-      "calendarFound": 9
+      "capsuleFound": 0,
+      "calendarFound": 0
     }
   }
 }
