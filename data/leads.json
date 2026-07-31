@@ -809,18 +809,144 @@
         "LinkedIn"
       ],
       "sourceKey": "capsule:manual-import-31jul:48"
+    },
+    {
+      "id": "37091cd8-a1bb-4ecc-8d0c-954ed97e24c0",
+      "name": "Noam Yuchtman",
+      "source": "calendar",
+      "meetingDate": "2026-06-25",
+      "followUpDate": "2026-07-02",
+      "notes": "Meeting in London: Noam & Tiffany",
+      "status": "pending",
+      "email": "noam.yuchtman@gmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:1ottsdlm4u3u79ppuuidgi8hgi"
+    },
+    {
+      "id": "09a2f59e-025b-469d-8152-6b604e739e29",
+      "name": "Noam Yuchtman",
+      "source": "calendar",
+      "meetingDate": "2026-06-26",
+      "followUpDate": "2026-07-03",
+      "notes": "Meeting in London + Lunch at No.10 Restaurant 上海10號 (Holborn): Noam & Tiffany",
+      "status": "pending",
+      "email": "noam.yuchtman@gmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:2vg7i7mrieb6285vca5jb2lnb2"
+    },
+    {
+      "id": "801f16d9-23c7-42cd-9fd2-f6579efef1e5",
+      "name": "Leo Stein",
+      "source": "calendar",
+      "meetingDate": "2026-06-30",
+      "followUpDate": "2026-07-07",
+      "notes": "Maryland Scholars Investment Fund X Oxbridge Economics",
+      "status": "pending",
+      "email": "leostein@terpmail.umd.edu",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:2n3rou8gq58m50cppd5kovn8bk"
+    },
+    {
+      "id": "bccbae74-2195-4e24-944c-976e64729d53",
+      "name": "Xinni Cai",
+      "source": "calendar",
+      "meetingDate": "2026-07-01",
+      "followUpDate": "2026-07-08",
+      "notes": "Meeting: Xinni & Tiffany",
+      "status": "pending",
+      "email": "xinni_cai@foxmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:1n1np94j2or41bg8p0a00190q3"
+    },
+    {
+      "id": "05281469-974f-484c-bbd6-95b52bc5492f",
+      "name": "Noam Yuchtman",
+      "source": "calendar",
+      "meetingDate": "2026-07-09",
+      "followUpDate": "2026-07-16",
+      "notes": "Research Update Noam and Tiffany",
+      "status": "pending",
+      "email": "noam.yuchtman@gmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:0i8silef3tvhjrf7tg65rp3kdl_20260709T043000Z"
+    },
+    {
+      "id": "9fb38016-1fe4-4d3d-b259-d2bd343297a6",
+      "name": "Henry Sun",
+      "source": "calendar",
+      "meetingDate": "2026-07-14",
+      "followUpDate": "2026-07-21",
+      "notes": "Meeting: Henry & Tiffany",
+      "status": "pending",
+      "email": "henry.sun@stockfan.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:45drt756f8bocjvbkuusb80cqu"
+    },
+    {
+      "id": "e7b15f77-b15f-4755-9a77-0f07eddb9a05",
+      "name": "Dingy (Stanford)",
+      "source": "calendar",
+      "meetingDate": "2026-07-17",
+      "followUpDate": "2026-07-24",
+      "notes": "Codebook Meeting",
+      "status": "pending",
+      "email": "dingy@stanford.edu",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:0815q3ak0be57nc2hdd5f5ke83:dingy@stanford.edu"
+    },
+    {
+      "id": "d2727a6a-f8f2-4b35-bdc5-cd7ae02e5267",
+      "name": "TL3176 (Stanford)",
+      "source": "calendar",
+      "meetingDate": "2026-07-17",
+      "followUpDate": "2026-07-24",
+      "notes": "Codebook Meeting",
+      "status": "pending",
+      "email": "tl3176@stanford.edu",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:0815q3ak0be57nc2hdd5f5ke83:tl3176@stanford.edu"
+    },
+    {
+      "id": "6e8fcdfa-6069-44f5-a5bf-a0c35854dd66",
+      "name": "Noam Yuchtman",
+      "source": "calendar",
+      "meetingDate": "2026-07-23",
+      "followUpDate": "2026-07-30",
+      "notes": "Research Update Noam and Tiffany",
+      "status": "pending",
+      "email": "noam.yuchtman@gmail.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": "calendar:0i8silef3tvhjrf7tg65rp3kdl_20260723T043000Z"
     }
   ],
   "meta": {
     "lastCapsuleSyncAt": "2026-07-31T08:35:42.074Z",
-    "lastCalendarSyncAt": "2026-07-31T08:35:42.074Z",
-    "lastRunAt": "2026-07-31T08:47:22.503Z",
+    "lastCalendarSyncAt": "2026-07-31T09:07:33.989Z",
+    "lastRunAt": "2026-07-31T09:07:33.989Z",
     "lastRunSummary": {
-      "added": 49,
+      "added": 9,
       "updated": 0,
       "unchanged": 0,
       "capsuleFound": 49,
-      "calendarFound": 0
+      "calendarFound": 9
     }
   }
 }
