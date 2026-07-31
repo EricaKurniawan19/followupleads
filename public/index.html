@@ -263,8 +263,15 @@
   </div>
 
   <div id="followupsView">
-    <div class="btnrow" style="margin-bottom:12px;">
+    <div class="btnrow" style="margin-bottom:12px;justify-content:space-between;">
       <button class="ghost" id="bulkMarkOverdueDone">Mark all overdue as followed up</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label for="sortMode" style="margin:0;">Sort by</label>
+        <select id="sortMode" style="width:auto;padding:7px 9px;">
+          <option value="followup">Follow-up date (soonest first)</option>
+          <option value="recent">Most recent meeting</option>
+        </select>
+      </div>
     </div>
     <div id="cards" class="cards"></div>
   </div>
@@ -333,11 +340,14 @@ function stampText(lead){
   return { big: d, small: d===1? 'day left':'days left' };
 }
 
+let sortMode = 'followup';
+
 function render(){
   const cards = document.getElementById('cards');
   cards.innerHTML = '';
   const sorted = [...state.leads].sort((a,b)=>{
     if((a.status==='done') !== (b.status==='done')) return a.status==='done' ? 1 : -1;
+    if(sortMode === 'recent') return new Date(b.meetingDate) - new Date(a.meetingDate);
     return new Date(a.followUpDate) - new Date(b.followUpDate);
   });
   if(sorted.length === 0){
@@ -614,6 +624,11 @@ document.getElementById('activityLog').addEventListener('click', async (e)=>{
     renderActivityLog();
     render(); // keep follow-ups view in sync too
   }
+});
+
+document.getElementById('sortMode').addEventListener('change', (e)=>{
+  sortMode = e.target.value;
+  render();
 });
 
 document.getElementById('bulkMarkOverdueDone').addEventListener('click', async ()=>{
