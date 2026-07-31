@@ -99,6 +99,12 @@ Pick one:
   on a schedule and commits the updated `data/leads.json` back to the repo.
   No server to keep alive; needs the Capsule/Google secrets set on the repo
   (Settings → Secrets and variables → Actions).
+- **A hosted web server** (e.g. Render's free tier) — runs `npm run serve`
+  continuously so you get a real, editable web UI at a permanent URL. Free
+  tiers typically have an *ephemeral* disk, so also set `GITHUB_TOKEN`
+  (a classic PAT with `repo` scope) and `GITHUB_REPO` — every save then
+  gets committed back to the repo, so a restart re-clones the latest data
+  instead of losing edits made through the UI.
 
 `SYNC_CRON` controls the schedule for `serve`/`schedule` (default twice
 daily, 7am and 3pm). The GitHub Actions workflow has its own `cron:` line

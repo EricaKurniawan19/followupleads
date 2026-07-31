@@ -17,4 +17,8 @@ module.exports = {
   syncCron: process.env.SYNC_CRON || '0 7,15 * * *',
   port: parseInt(process.env.PORT || '3000', 10),
   schedulerEnabled: process.env.DISABLE_SCHEDULER !== 'true',
+  gitBackup: {
+    githubToken: process.env.GITHUB_TOKEN || '',
+    githubRepo: process.env.GITHUB_REPO || '',
+  },
 };
