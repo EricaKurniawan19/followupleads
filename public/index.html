@@ -293,6 +293,10 @@
     <button id="tabContacts" class="ghost">Contacts</button>
   </div>
 
+  <div style="margin-bottom:14px;">
+    <input type="text" id="searchInput" placeholder="Search by name…">
+  </div>
+
   <div id="followupsView">
     <div class="btnrow" style="margin-bottom:12px;justify-content:space-between;">
       <button class="ghost" id="bulkMarkOverdueDone">Mark all overdue as followed up</button>
@@ -435,23 +439,78 @@ function dueBadgeText(lead){
 }
 
 let sortMode = 'followup';
+let searchQuery = '';
+let editingLeadId = null;
+
+function editFormHtml(l){
+  return `
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="row">
+        <div><label>Name</label><input type="text" class="edit-name" value="${escapeHtml(l.name)}"></div>
+        <div style="max-width:160px;"><label>Meeting date</label><input type="date" class="edit-date" value="${l.meetingDate}"></div>
+      </div>
+      <div class="row">
+        <div><label>Email</label><input type="text" class="edit-email" value="${escapeHtml(l.email||'')}"></div>
+        <div><label>Phone</label><input type="text" class="edit-phone" value="${escapeHtml(l.phone||'')}"></div>
+      </div>
+      <div class="row">
+        <div><label>LinkedIn</label><input type="text" class="edit-linkedin" value="${escapeHtml(l.linkedin||'')}"></div>
+        <div><label>Tags</label><input type="text" class="edit-tags" value="${escapeHtml((l.tags||[]).join(', '))}"></div>
+      </div>
+      <div><label>Notes</label><textarea class="edit-notes" style="min-height:70px;">${escapeHtml(l.notes||'')}</textarea></div>
+      <div class="btnrow">
+        <button class="primary" data-act="save-edit" data-id="${l.id}">Save</button>
+        <button class="ghost" data-act="cancel-edit" data-id="${l.id}">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+
+async function saveEditFromRow(row, id){
+  const lead = state.leads.find(l => l.id === id);
+  if(!lead) return;
+  const payload = {
+    name: row.querySelector('.edit-name').value.trim() || lead.name,
+    meetingDate: row.querySelector('.edit-date').value || lead.meetingDate,
+    email: row.querySelector('.edit-email').value.trim(),
+    phone: row.querySelector('.edit-phone').value.trim(),
+    linkedin: row.querySelector('.edit-linkedin').value.trim(),
+    tags: row.querySelector('.edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    notes: row.querySelector('.edit-notes').value.trim(),
+  };
+  Object.assign(lead, payload);
+  await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify(payload) });
+  editingLeadId = null;
+}
+
+function matchesSearch(name){
+  if(!searchQuery) return true;
+  return (name||'').toLowerCase().includes(searchQuery.toLowerCase());
+}
 
 function render(){
   const cards = document.getElementById('cards');
   cards.innerHTML = '';
-  const sorted = [...state.leads].sort((a,b)=>{
+  const sorted = state.leads.filter(l => matchesSearch(l.name)).sort((a,b)=>{
     if((a.status==='done') !== (b.status==='done')) return a.status==='done' ? 1 : -1;
     if(sortMode === 'recent') return new Date(b.meetingDate) - new Date(a.meetingDate);
     return new Date(a.followUpDate) - new Date(b.followUpDate);
   });
   if(sorted.length === 0){
-    cards.innerHTML = `<div class="empty"><b>Nothing on the ledger yet</b>Leads will appear here once the background sync runs, or add one by hand.</div>`;
+    cards.innerHTML = searchQuery
+      ? `<div class="empty"><b>No matches</b>No leads found for "${escapeHtml(searchQuery)}".</div>`
+      : `<div class="empty"><b>Nothing on the ledger yet</b>Leads will appear here once the background sync runs, or add one by hand.</div>`;
     return;
   }
   for(const lead of sorted){
     const st = statusFor(lead);
     const el = document.createElement('div');
     el.className = 'card ' + st;
+    if(lead.id === editingLeadId){
+      el.innerHTML = `<div class="card-body">${editFormHtml(lead)}</div>`;
+      cards.appendChild(el);
+      continue;
+    }
     el.innerHTML = `
       <div class="card-body">
         <div class="card-top">
@@ -472,6 +531,7 @@ function render(){
         <div class="card-actions">
           ${lead.status!=='done' ? `<button data-act="done" data-id="${lead.id}">Mark followed up</button>` : `<button data-act="undo" data-id="${lead.id}">Undo</button>`}
           ${lead.status!=='done' ? `<button data-act="snooze" data-id="${lead.id}">Snooze 3 days</button>` : ''}
+          <button data-act="edit" data-id="${lead.id}" class="ghost">Edit</button>
         </div>
       </div>
     `;
@@ -491,6 +551,7 @@ function tagClass(t){
 }
 
 document.getElementById('cards').addEventListener('click', async (e)=>{
+  if(await handleEditClick(e, render)) return;
   const btn = e.target.closest('button[data-act]');
   if(!btn) return;
   const id = btn.dataset.id;
@@ -587,6 +648,8 @@ document.getElementById('tabContacts').addEventListener('click', ()=>{
   renderContacts();
 });
 
+let editingContactKey = null;
+
 function renderContacts(){
   const list = document.getElementById('contactsList');
   // group leads by name (case-insensitive) into one contact record each
@@ -595,7 +658,7 @@ function renderContacts(){
     const key = l.name.trim().toLowerCase();
     if(!byName.has(key)){
       byName.set(key, {
-        name: l.name, email:'', phone:'', linkedin:'', tags:new Set(),
+        key, name: l.name, email:'', phone:'', linkedin:'', tags:new Set(),
         meetingCount:0, lastMeeting: l.meetingDate, sources:new Set()
       });
     }
@@ -608,13 +671,35 @@ function renderContacts(){
     c.meetingCount++;
     if(new Date(l.meetingDate) > new Date(c.lastMeeting)) c.lastMeeting = l.meetingDate;
   }
-  const contacts = Array.from(byName.values()).sort((a,b) => a.name.localeCompare(b.name));
+  const contacts = Array.from(byName.values()).filter(c => matchesSearch(c.name)).sort((a,b) => a.name.localeCompare(b.name));
 
   if(contacts.length === 0){
-    list.innerHTML = `<div class="empty"><b>No contacts yet</b>Leads will show up here as a directory once synced or added.</div>`;
+    list.innerHTML = searchQuery
+      ? `<div class="empty"><b>No matches</b>No contacts found for "${escapeHtml(searchQuery)}".</div>`
+      : `<div class="empty"><b>No contacts yet</b>Leads will show up here as a directory once synced or added.</div>`;
     return;
   }
-  list.innerHTML = contacts.map(c => `
+  list.innerHTML = contacts.map(c => {
+    if(c.key === editingContactKey){
+      return `
+        <div class="log-row" style="align-items:flex-start;flex-direction:column;gap:10px;">
+          <div class="lead-name">${escapeHtml(c.name)}</div>
+          <div class="row" style="width:100%;">
+            <div><label>Email</label><input type="text" class="edit-contact-email" value="${escapeHtml(c.email)}"></div>
+            <div><label>Phone</label><input type="text" class="edit-contact-phone" value="${escapeHtml(c.phone)}"></div>
+          </div>
+          <div class="row" style="width:100%;">
+            <div><label>LinkedIn</label><input type="text" class="edit-contact-linkedin" value="${escapeHtml(c.linkedin)}"></div>
+            <div><label>Tags</label><input type="text" class="edit-contact-tags" value="${escapeHtml(Array.from(c.tags).join(', '))}"></div>
+          </div>
+          <div class="btnrow">
+            <button class="primary" data-act="save-edit-contact" data-key="${escapeHtml(c.key)}">Save</button>
+            <button class="ghost" data-act="cancel-edit-contact">Cancel</button>
+          </div>
+        </div>
+      `;
+    }
+    return `
     <div class="log-row" style="align-items:flex-start;">
       <div class="log-body">
         <span class="log-name">${escapeHtml(c.name)}</span>
@@ -627,42 +712,58 @@ function renderContacts(){
         </div>` : `<div class="contact-row" style="font-style:italic;">no email / phone / LinkedIn on file</div>`}
         ${c.tags.size ? `<div class="tag-row">${Array.from(c.tags).map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
       </div>
+      <button class="ghost" data-act="edit-contact" data-key="${escapeHtml(c.key)}" style="flex-shrink:0;">Edit</button>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
-let editingLeadId = null;
+document.getElementById('contactsList').addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  if(btn.dataset.act === 'edit-contact'){
+    editingContactKey = btn.dataset.key;
+    renderContacts();
+    return;
+  }
+  if(btn.dataset.act === 'cancel-edit-contact'){
+    editingContactKey = null;
+    renderContacts();
+    return;
+  }
+  if(btn.dataset.act === 'save-edit-contact'){
+    const key = btn.dataset.key;
+    const row = btn.closest('.log-row');
+    const payload = {
+      email: row.querySelector('.edit-contact-email').value.trim(),
+      phone: row.querySelector('.edit-contact-phone').value.trim(),
+      linkedin: row.querySelector('.edit-contact-linkedin').value.trim(),
+      tags: row.querySelector('.edit-contact-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    };
+    const matching = state.leads.filter(l => l.name.trim().toLowerCase() === key);
+    for(const lead of matching){
+      Object.assign(lead, payload);
+      await api(`/api/leads/${lead.id}`, { method:'PATCH', body: JSON.stringify(payload) });
+    }
+    editingContactKey = null;
+    renderContacts();
+    render();
+    renderActivityLog();
+  }
+});
 
 function renderActivityLog(){
   const log = document.getElementById('activityLog');
-  const sorted = [...state.leads].sort((a,b) => new Date(b.meetingDate) - new Date(a.meetingDate));
+  const sorted = state.leads.filter(l => matchesSearch(l.name)).sort((a,b) => new Date(b.meetingDate) - new Date(a.meetingDate));
   if(sorted.length === 0){
-    log.innerHTML = `<div class="empty"><b>No activity yet</b>Once leads sync in or are added, every meeting shows up here in order.</div>`;
+    log.innerHTML = searchQuery
+      ? `<div class="empty"><b>No matches</b>No activity found for "${escapeHtml(searchQuery)}".</div>`
+      : `<div class="empty"><b>No activity yet</b>Once leads sync in or are added, every meeting shows up here in order.</div>`;
     return;
   }
   log.innerHTML = sorted.map(l => {
     if(l.id === editingLeadId){
-      return `
-        <div class="log-row" style="align-items:flex-start;flex-direction:column;gap:10px;">
-          <div class="row" style="width:100%;">
-            <div><label>Name</label><input type="text" class="edit-name" value="${escapeHtml(l.name)}"></div>
-            <div style="max-width:160px;"><label>Meeting date</label><input type="date" class="edit-date" value="${l.meetingDate}"></div>
-          </div>
-          <div class="row" style="width:100%;">
-            <div><label>Email</label><input type="text" class="edit-email" value="${escapeHtml(l.email||'')}"></div>
-            <div><label>Phone</label><input type="text" class="edit-phone" value="${escapeHtml(l.phone||'')}"></div>
-          </div>
-          <div class="row" style="width:100%;">
-            <div><label>LinkedIn</label><input type="text" class="edit-linkedin" value="${escapeHtml(l.linkedin||'')}"></div>
-            <div><label>Tags</label><input type="text" class="edit-tags" value="${escapeHtml((l.tags||[]).join(', '))}"></div>
-          </div>
-          <div style="width:100%;"><label>Notes</label><textarea class="edit-notes" style="min-height:70px;">${escapeHtml(l.notes||'')}</textarea></div>
-          <div class="btnrow">
-            <button class="primary" data-act="save-edit" data-id="${l.id}">Save</button>
-            <button class="ghost" data-act="cancel-edit" data-id="${l.id}">Cancel</button>
-          </div>
-        </div>
-      `;
+      return `<div class="log-row" style="align-items:flex-start;">${editFormHtml(l)}</div>`;
     }
     return `
     <div class="log-row">
@@ -684,39 +785,44 @@ function renderActivityLog(){
   }).join('');
 }
 
-document.getElementById('activityLog').addEventListener('click', async (e)=>{
+async function handleEditClick(e, rerenderCurrent){
   const btn = e.target.closest('button[data-act]');
-  if(!btn) return;
+  if(!btn) return false;
   const id = btn.dataset.id;
   if(btn.dataset.act === 'edit'){
     editingLeadId = id;
-    renderActivityLog();
-    return;
+    rerenderCurrent();
+    return true;
   }
   if(btn.dataset.act === 'cancel-edit'){
     editingLeadId = null;
-    renderActivityLog();
-    return;
+    rerenderCurrent();
+    return true;
   }
   if(btn.dataset.act === 'save-edit'){
-    const lead = state.leads.find(l => l.id === id);
-    if(!lead) return;
-    const row = btn.closest('.log-row');
-    const payload = {
-      name: row.querySelector('.edit-name').value.trim() || lead.name,
-      meetingDate: row.querySelector('.edit-date').value || lead.meetingDate,
-      email: row.querySelector('.edit-email').value.trim(),
-      phone: row.querySelector('.edit-phone').value.trim(),
-      linkedin: row.querySelector('.edit-linkedin').value.trim(),
-      tags: row.querySelector('.edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-      notes: row.querySelector('.edit-notes').value.trim(),
-    };
-    Object.assign(lead, payload);
-    await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify(payload) });
-    editingLeadId = null;
+    const row = btn.closest('.log-row, .card-body');
+    await saveEditFromRow(row, id);
+    render();
     renderActivityLog();
-    render(); // keep follow-ups view in sync too
+    return true;
   }
+  return false;
+}
+
+document.getElementById('activityLog').addEventListener('click', async (e)=>{
+  await handleEditClick(e, renderActivityLog);
+});
+
+document.getElementById('sortMode').addEventListener('change', (e)=>{
+  sortMode = e.target.value;
+  render();
+});
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  searchQuery = e.target.value;
+  render();
+  renderActivityLog();
+  renderContacts();
 });
 
 document.getElementById('sortMode').addEventListener('change', (e)=>{
