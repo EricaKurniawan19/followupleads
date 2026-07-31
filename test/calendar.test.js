@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { eventsToLeads, domainOf, upcomingExternalMeetings } = require('../src/sync/calendar');
+const { eventsToLeads, domainOf, upcomingExternalMeetings, dedupeById, eventHasAttendee } = require('../src/sync/calendar');
 
 const NOW = new Date('2026-07-31T12:00:00Z');
 const COMPANY_DOMAIN = 'oxbridge-econ.com';
@@ -121,6 +121,60 @@ test('upcomingExternalMeetings excludes internal-only meetings', () => {
   ];
   const meetings = upcomingExternalMeetings(events, { companyDomain: COMPANY_DOMAIN, now: NOW });
   assert.equal(meetings.length, 0);
+});
+
+test('eventsToLeads excludes explicitly excluded personal contacts', () => {
+  const events = [
+    {
+      id: 'evtP',
+      end: { dateTime: '2026-07-30T10:00:00Z' },
+      attendees: [{ email: 'family@personal.com' }],
+    },
+  ];
+  const leads = eventsToLeads(events, {
+    companyDomain: COMPANY_DOMAIN,
+    excludeEmails: ['family@personal.com'],
+    now: NOW,
+  });
+  assert.equal(leads.length, 0);
+});
+
+test('eventsToLeads with requireAttendee only counts meetings involving that person', () => {
+  const events = [
+    {
+      id: 'evtQ1',
+      end: { dateTime: '2026-07-30T10:00:00Z' },
+      organizer: { email: 'admin@oxbridge-econ.com' },
+      attendees: [{ email: 'lead@external.com' }],
+    },
+    {
+      id: 'evtQ2',
+      end: { dateTime: '2026-07-30T10:00:00Z' },
+      organizer: { email: 'someoneelse@oxbridge-econ.com' },
+      attendees: [{ email: 'lead2@external.com' }],
+    },
+  ];
+  const leads = eventsToLeads(events, {
+    companyDomain: COMPANY_DOMAIN,
+    requireAttendee: 'admin@oxbridge-econ.com',
+    now: NOW,
+  });
+  assert.equal(leads.length, 1);
+  assert.equal(leads[0].email, 'lead@external.com');
+});
+
+test('eventHasAttendee matches organizer or attendee list, case-insensitively', () => {
+  assert.equal(eventHasAttendee({ organizer: { email: 'Admin@Oxbridge-Econ.com' } }, 'admin@oxbridge-econ.com'), true);
+  assert.equal(eventHasAttendee({ attendees: [{ email: 'admin@oxbridge-econ.com' }] }, 'admin@oxbridge-econ.com'), true);
+  assert.equal(eventHasAttendee({ attendees: [{ email: 'someone@else.com' }] }, 'admin@oxbridge-econ.com'), false);
+  assert.equal(eventHasAttendee({ attendees: [] }, ''), true);
+});
+
+test('dedupeById keeps only the first copy of a shared invite seen across calendars', () => {
+  const events = [{ id: 'a', summary: 'x' }, { id: 'b', summary: 'y' }, { id: 'a', summary: 'x (from other calendar)' }];
+  const result = dedupeById(events);
+  assert.equal(result.length, 2);
+  assert.deepEqual(result.map((e) => e.id), ['a', 'b']);
 });
 
 test('multiple external attendees each get a lead with a disambiguated sourceKey', () => {

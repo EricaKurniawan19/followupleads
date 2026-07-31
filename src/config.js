@@ -10,6 +10,24 @@ module.exports = {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     refreshToken: process.env.GOOGLE_REFRESH_TOKEN || '',
     redirectUri: process.env.GOOGLE_REDIRECT_URI || 'urn:ietf:wg:oauth:2.0:oob',
+    // Comma-separated calendar IDs to check, e.g. "primary,admin@oxbridge-econ.com"
+    // — useful when meetings get organized on a colleague's calendar you have
+    // read access to. Defaults to just your own primary calendar.
+    calendarIds: (process.env.GOOGLE_CALENDAR_IDS || 'primary')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
+    // Personal contacts (family, friends) who show up as "external" attendees
+    // on a shared calendar but aren't leads — excluded regardless of domain.
+    excludeEmails: (process.env.GOOGLE_CALENDAR_EXCLUDE_EMAILS || '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+    // If set, a meeting only counts as a lead when this address (e.g. the
+    // person actually doing business development) is an attendee/organizer
+    // AND there's an external attendee — filters out other internal meetings
+    // that happen to have an external guest for unrelated reasons.
+    requireAttendee: (process.env.GOOGLE_CALENDAR_REQUIRE_ATTENDEE || '').trim().toLowerCase(),
   },
   companyDomain: process.env.COMPANY_DOMAIN || 'oxbridge-econ.com',
   followUpDays: parseInt(process.env.FOLLOW_UP_DAYS || '7', 10),
