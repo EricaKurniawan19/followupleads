@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "followUpDays": 7
+  },
+  "leads": [],
+  "meta": {
+    "lastCapsuleSyncAt": null,
+    "lastCalendarSyncAt": null,
+    "lastRunAt": null,
+    "lastRunSummary": null
+  }
+}

@@ -1,0 +1,41 @@
+name: Lead follow-up sync
+
+on:
+  schedule:
+    - cron: '0 7,15 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Run sync
+        run: npm run sync
+        env:
+          CAPSULE_API_TOKEN: ${{ secrets.CAPSULE_API_TOKEN }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          COMPANY_DOMAIN: ${{ vars.COMPANY_DOMAIN }}
+          FOLLOW_UP_DAYS: ${{ vars.FOLLOW_UP_DAYS }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Commit updated leads
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/leads.json
+          git diff --quiet --cached || git commit -m "chore: sync leads [skip ci]"
+          git push

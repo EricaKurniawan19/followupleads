@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Follow-Up Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFFFFF;
+    --surface: #FAFAF8;
+    --surface-2: #F1F0EB;
+    --edge: #E1DFD6;
+    --ink: #23281F;
+    --ink-dim: #767C6E;
+    --brass: #2F5D50;
+    --rust: #C0432A;
+    --amber: #B8791F;
+    --sage: #3F8F6F;
+    --sage-dim: #BFD8CB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px;}
+  header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:8px;}
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:34px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .tagline{color:var(--ink-dim);font-size:13px;margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em;}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;}
+  button{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    border:1px solid var(--edge);
+    background:var(--surface);
+    color:var(--ink);
+    padding:9px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  button:hover{border-color:var(--brass);}
+  button.primary{background:var(--brass);color:#FFFFFF;border-color:var(--brass);font-weight:600;}
+  button.primary:hover{filter:brightness(1.08);}
+  button:disabled{opacity:0.5;cursor:default;}
+  button.ghost{background:transparent;}
+  .section-title{
+    font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    font-size:11px;
+    color:var(--ink-dim);
+    margin:36px 0 12px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .section-title::after{content:"";flex:1;height:1px;background:var(--edge);}
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--edge);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .panel + .panel{margin-top:12px;}
+  label{font-size:12px;color:var(--ink-dim);display:block;margin-bottom:5px;}
+  input[type=text], input[type=password], input[type=date], input[type=number], textarea{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--edge);
+    color:var(--ink);
+    padding:9px 10px;
+    border-radius:6px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+  }
+  textarea{resize:vertical;min-height:60px;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;}
+  .row > div{flex:1;min-width:160px;}
+  .hint{font-size:12px;color:var(--ink-dim);margin-top:8px;line-height:1.5;}
+  .hint a{color:var(--brass);}
+  .status-line{font-size:12.5px;margin-top:10px;padding:8px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;}
+  .status-line.ok{background:#EAF4EF;color:#2A6B50;}
+  .status-line.err{background:#FBEAE6;color:#A8371D;}
+  .status-line.pending{background:#F0F2ED;color:var(--brass);}
+
+  .cards{display:flex;flex-direction:column;gap:12px;}
+  .card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--edge);
+    border-radius:4px 10px 10px 4px;
+    padding:16px 18px 16px 22px;
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    border-left:4px solid var(--sage-dim);
+  }
+  .card.overdue{border-left-color:var(--rust);}
+  .card.soon{border-left-color:var(--amber);}
+  .card.done{opacity:0.55;}
+  .stamp{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:500;
+    color:var(--ink);
+    border:1px solid var(--edge);
+    border-radius:50%;
+    width:56px;height:56px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    flex-shrink:0;
+    text-align:center;
+    line-height:1.15;
+  }
+  .card.overdue .stamp{border-color:var(--rust);color:var(--rust);}
+  .card.soon .stamp{border-color:var(--amber);color:var(--amber);}
+  .card.upcoming .stamp{border-color:var(--sage);color:var(--sage);}
+  .stamp b{font-size:16px;font-family:'Space Grotesk',sans-serif;}
+  .card-body{flex:1;min-width:0;}
+  .card-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;}
+  .lead-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;}
+  .source-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-dim);
+    border:1px solid var(--edge);
+    border-radius:4px;
+    padding:2px 6px;
+  }
+  .meta{font-size:12px;color:var(--ink-dim);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+  .notes{font-size:13.5px;color:var(--ink);margin-top:8px;line-height:1.5;}
+  .contact-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--ink-dim);}
+  .contact-row a{color:var(--brass);text-decoration:none;}
+  .contact-row a:hover{text-decoration:underline;}
+  .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .tag-chip{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;
+    background:var(--surface-2);border:1px solid var(--edge);
+    border-radius:20px;padding:2px 9px;color:var(--ink-dim);
+  }
+  .tag-chip.priority-important{background:#FBEAE6;border-color:#E8B8A8;color:#A8371D;font-weight:600;}
+  .tag-chip.priority-moderate{background:#FCF3E1;border-color:#E9CE95;color:#8A5A0F;font-weight:600;}
+  .tag-chip.priority-low{background:#F1F0EB;border-color:var(--edge);color:var(--ink-dim);}
+  .log-row{
+    display:flex;gap:14px;align-items:center;
+    background:var(--surface);border:1px solid var(--edge);
+    border-radius:8px;padding:11px 16px;
+  }
+  .log-date{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);
+    width:78px;flex-shrink:0;
+  }
+  .log-body{flex:1;min-width:0;}
+  .log-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;margin-right:8px;}
+  .log-notes{font-size:13px;color:var(--ink-dim);margin-top:2px;line-height:1.45;}
+  .card-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .card-actions button{padding:6px 11px;font-size:12px;}
+  .empty{
+    text-align:center;padding:50px 20px;color:var(--ink-dim);
+    border:1px dashed var(--edge);border-radius:10px;
+  }
+  .empty b{color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:17px;display:block;margin-bottom:6px;}
+  .fieldset-title{font-size:13px;font-weight:600;margin-bottom:10px;}
+  .toggle-link{font-size:12px;color:var(--brass);cursor:pointer;text-decoration:underline;}
+  .spinner{
+    width:13px;height:13px;border-radius:50%;
+    border:2px solid rgba(35,40,31,0.15);
+    border-top-color:var(--ink);
+    display:inline-block;animation:spin .7s linear infinite;margin-right:6px;vertical-align:-2px;
+  }
+  .panel, .card{ box-shadow: 0 1px 2px rgba(35,40,31,0.04); }
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Follow-Up Ledger</h1>
+      <div class="tagline">every lead, seven days, no gaps</div>
+    </div>
+    <div class="btnrow">
+      <button class="ghost" id="settingsToggle">Settings</button>
+      <button class="primary" id="addManual">+ Add lead</button>
+    </div>
+  </header>
+
+  <div id="settingsPanel" class="panel" style="display:none;margin-top:16px;">
+    <div class="fieldset-title">Follow-up timing</div>
+    <div class="row">
+      <div style="max-width:140px;">
+        <label for="followUpDays">Days after meeting</label>
+        <input type="number" id="followUpDays" value="7" min="1" max="60">
+      </div>
+      <div style="flex:0 0 auto;align-self:flex-end;">
+        <button id="saveSettingsBtn">Save</button>
+      </div>
+    </div>
+    <div class="hint">Applies to newly imported or added leads. You can still edit any single lead's date by hand.</div>
+  </div>
+
+  <div id="addPanel" class="panel" style="display:none;margin-top:16px;">
+    <div class="fieldset-title">Add a lead manually</div>
+    <div class="row">
+      <div><label>Name / company</label><input type="text" id="mName" placeholder="Jane Cooper, Acme Co"></div>
+      <div><label>Meeting date</label><input type="date" id="mDate"></div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <div><label>Email</label><input type="text" id="mEmail" placeholder="jane@acme.com"></div>
+      <div><label>Phone</label><input type="text" id="mPhone" placeholder="+1 555 010 2020"></div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <div><label>LinkedIn</label><input type="text" id="mLinkedin" placeholder="linkedin.com/in/janecooper"></div>
+      <div><label>Tags</label><input type="text" id="mTags" placeholder="warm, referral, enterprise"></div>
+    </div>
+    <div style="margin-top:10px;"><label>What was the meeting about</label><textarea id="mNotes" placeholder="Discussed pricing tiers, they'll review with finance..."></textarea></div>
+    <div class="btnrow" style="margin-top:12px;">
+      <button class="primary" id="saveManual">Add to ledger</button>
+      <button class="ghost" id="cancelManual">Cancel</button>
+    </div>
+  </div>
+
+  <div class="section-title">Sync status</div>
+
+  <div class="panel">
+    <div class="row">
+      <div>
+        <label>Capsule CRM</label>
+        <div class="meta" id="capsuleSyncedAt">not yet synced</div>
+      </div>
+      <div>
+        <label>Google Calendar</label>
+        <div class="meta" id="calendarSyncedAt">not yet synced</div>
+      </div>
+      <div>
+        <label>Last run</label>
+        <div class="meta" id="lastRunSummary">—</div>
+      </div>
+      <div style="flex:0 0 auto;align-self:flex-end;">
+        <button class="primary" id="syncNowBtn">Sync now</button>
+      </div>
+    </div>
+    <div class="hint">Capsule and Calendar sync automatically in the background on a schedule — nothing to click day-to-day. "Sync now" triggers an on-demand check.</div>
+    <div id="syncStatus"></div>
+  </div>
+
+  <div class="section-title">Ledger</div>
+  <div class="btnrow" style="margin-bottom:14px;">
+    <button id="tabFollowups" class="primary">Follow-ups</button>
+    <button id="tabActivityLog" class="ghost">Activity log</button>
+    <button id="tabContacts" class="ghost">Contacts</button>
+  </div>
+
+  <div id="followupsView">
+    <div class="btnrow" style="margin-bottom:12px;">
+      <button class="ghost" id="bulkMarkOverdueDone">Mark all overdue as followed up</button>
+    </div>
+    <div id="cards" class="cards"></div>
+  </div>
+
+  <div id="activityLogView" style="display:none;">
+    <div id="activityLog" class="cards"></div>
+  </div>
+
+  <div id="contactsView" style="display:none;">
+    <div id="contactsList" class="cards"></div>
+  </div>
+</div>
+
+<script>
+const DEFAULTS = { followUpDays: 7 };
+let state = { settings: { ...DEFAULTS }, leads: [], meta: {} };
+
+function uid(){ return 'l_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function addDays(iso, n){ const d = new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function daysBetween(a,b){ return Math.round((new Date(b+'T00:00:00') - new Date(a+'T00:00:00')) / 86400000); }
+
+async function api(path, opts){
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if(!res.ok){
+    const body = await res.json().catch(()=>({}));
+    throw new Error(body.error || `${res.status} ${res.statusText}`);
+  }
+  if(res.status === 204) return null;
+  return res.json();
+}
+
+function formatSyncedAt(iso){
+  if(!iso) return 'not yet synced';
+  return new Date(iso).toLocaleString();
+}
+
+async function loadState(){
+  state = await api('/api/state');
+  document.getElementById('followUpDays').value = state.settings.followUpDays || 7;
+  document.getElementById('capsuleSyncedAt').textContent = formatSyncedAt(state.meta.lastCapsuleSyncAt);
+  document.getElementById('calendarSyncedAt').textContent = formatSyncedAt(state.meta.lastCalendarSyncAt);
+  const summary = state.meta.lastRunSummary;
+  document.getElementById('lastRunSummary').textContent = summary
+    ? `+${summary.added} new, ${summary.updated} updated`
+    : 'no runs yet';
+  render();
+}
+
+function statusFor(lead){
+  if(lead.status === 'done') return 'done';
+  const d = daysBetween(todayISO(), lead.followUpDate);
+  if(d < 0) return 'overdue';
+  if(d <= 1) return 'soon';
+  return 'upcoming';
+}
+
+function stampText(lead){
+  const d = daysBetween(todayISO(), lead.followUpDate);
+  if(lead.status === 'done') return { big: '✓', small: 'done' };
+  if(d < 0) return { big: Math.abs(d), small: d===-1? 'day late':'days late' };
+  if(d === 0) return { big: 'now', small: 'today' };
+  return { big: d, small: d===1? 'day left':'days left' };
+}
+
+function render(){
+  const cards = document.getElementById('cards');
+  cards.innerHTML = '';
+  const sorted = [...state.leads].sort((a,b)=>{
+    if((a.status==='done') !== (b.status==='done')) return a.status==='done' ? 1 : -1;
+    return new Date(a.followUpDate) - new Date(b.followUpDate);
+  });
+  if(sorted.length === 0){
+    cards.innerHTML = `<div class="empty"><b>Nothing on the ledger yet</b>Leads will appear here once the background sync runs, or add one by hand.</div>`;
+    return;
+  }
+  for(const lead of sorted){
+    const st = statusFor(lead);
+    const stamp = stampText(lead);
+    const el = document.createElement('div');
+    el.className = 'card ' + st;
+    el.innerHTML = `
+      <div class="stamp"><b>${stamp.big}</b><span>${stamp.small}</span></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="lead-name">${escapeHtml(lead.name)}</span>
+          <span class="source-tag">${lead.source}</span>
+        </div>
+        <div class="meta">met ${lead.meetingDate} &middot; follow up by ${lead.followUpDate}</div>
+        ${(lead.email || lead.phone || lead.linkedin) ? `<div class="contact-row">
+          ${lead.email ? `<span><a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a></span>` : ''}
+          ${lead.phone ? `<span>${escapeHtml(lead.phone)}</span>` : ''}
+          ${lead.linkedin ? `<span><a href="${escapeHtml(lead.linkedin.startsWith('http') ? lead.linkedin : 'https://' + lead.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
+        </div>` : ''}
+        ${(lead.tags && lead.tags.length) ? `<div class="tag-row">${lead.tags.map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        ${lead.notes ? `<div class="notes">${escapeHtml(lead.notes)}</div>` : ''}
+        <div class="card-actions">
+          ${lead.status!=='done' ? `<button data-act="done" data-id="${lead.id}">Mark followed up</button>` : `<button data-act="undo" data-id="${lead.id}">Undo</button>`}
+          ${lead.status!=='done' ? `<button data-act="snooze" data-id="${lead.id}">Snooze 3 days</button>` : ''}
+          <button data-act="delete" data-id="${lead.id}" class="ghost">Remove</button>
+        </div>
+      </div>
+    `;
+    cards.appendChild(el);
+  }
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function tagClass(t){
+  const v = (t||'').trim().toLowerCase();
+  if(v === 'important') return 'tag-chip priority-important';
+  if(v === 'moderate') return 'tag-chip priority-moderate';
+  if(v === 'not important') return 'tag-chip priority-low';
+  return 'tag-chip';
+}
+
+document.getElementById('cards').addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const id = btn.dataset.id;
+  const lead = state.leads.find(l=>l.id===id);
+  if(!lead) return;
+  if(btn.dataset.act === 'done'){ lead.status = 'done'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'done' }) }); }
+  if(btn.dataset.act === 'undo'){ lead.status = 'pending'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'pending' }) }); }
+  if(btn.dataset.act === 'snooze'){ lead.followUpDate = addDays(lead.followUpDate, 3); await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ followUpDate: lead.followUpDate }) }); }
+  if(btn.dataset.act === 'delete'){ state.leads = state.leads.filter(l=>l.id!==id); await api(`/api/leads/${id}`, { method:'DELETE' }); }
+  render();
+});
+
+document.getElementById('settingsToggle').addEventListener('click', ()=>{
+  const p = document.getElementById('settingsPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('addManual').addEventListener('click', ()=>{
+  document.getElementById('mDate').value = todayISO();
+  document.getElementById('addPanel').style.display = 'block';
+});
+document.getElementById('cancelManual').addEventListener('click', ()=>{
+  document.getElementById('addPanel').style.display = 'none';
+});
+document.getElementById('saveManual').addEventListener('click', async ()=>{
+  const name = document.getElementById('mName').value.trim();
+  const mdate = document.getElementById('mDate').value || todayISO();
+  const notes = document.getElementById('mNotes').value.trim();
+  const email = document.getElementById('mEmail').value.trim();
+  const phone = document.getElementById('mPhone').value.trim();
+  const linkedin = document.getElementById('mLinkedin').value.trim();
+  const tags = document.getElementById('mTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  if(!name){ alert('Give the lead a name first.'); return; }
+  const lead = await api('/api/leads', { method:'POST', body: JSON.stringify({ name, meetingDate: mdate, notes, email, phone, linkedin, tags }) });
+  state.leads.push(lead);
+  document.getElementById('mName').value='';
+  document.getElementById('mNotes').value='';
+  document.getElementById('mEmail').value='';
+  document.getElementById('mPhone').value='';
+  document.getElementById('mLinkedin').value='';
+  document.getElementById('mTags').value='';
+  document.getElementById('addPanel').style.display = 'none';
+  render();
+});
+
+document.getElementById('saveSettingsBtn').addEventListener('click', async ()=>{
+  const followUpDays = parseInt(document.getElementById('followUpDays').value) || 7;
+  state.settings = await api('/api/settings', { method:'PUT', body: JSON.stringify({ followUpDays }) });
+  setStatus('Settings saved.', 'ok');
+});
+
+function setStatus(msg, kind){
+  const el = document.getElementById('syncStatus');
+  el.innerHTML = `<div class="status-line ${kind}">${msg}</div>`;
+}
+
+document.getElementById('syncNowBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('syncNowBtn');
+  btn.disabled = true;
+  setStatus('<span class="spinner"></span>Syncing with Capsule and Calendar…', 'pending');
+  try{
+    const summary = await api('/api/sync', { method:'POST' });
+    await loadState();
+    setStatus(`Synced — ${summary.added} new lead(s), ${summary.updated} updated (found ${summary.capsuleFound} Capsule note(s), ${summary.calendarFound} calendar meeting(s)).`, 'ok');
+  }catch(err){
+    setStatus(`Sync failed: ${escapeHtml(err.message)}`, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('tabFollowups').addEventListener('click', ()=>{
+  document.getElementById('followupsView').style.display = 'block';
+  document.getElementById('activityLogView').style.display = 'none';
+  document.getElementById('contactsView').style.display = 'none';
+  document.getElementById('tabFollowups').className = 'primary';
+  document.getElementById('tabActivityLog').className = 'ghost';
+  document.getElementById('tabContacts').className = 'ghost';
+});
+document.getElementById('tabActivityLog').addEventListener('click', ()=>{
+  document.getElementById('followupsView').style.display = 'none';
+  document.getElementById('activityLogView').style.display = 'block';
+  document.getElementById('contactsView').style.display = 'none';
+  document.getElementById('tabFollowups').className = 'ghost';
+  document.getElementById('tabActivityLog').className = 'primary';
+  document.getElementById('tabContacts').className = 'ghost';
+  renderActivityLog();
+});
+document.getElementById('tabContacts').addEventListener('click', ()=>{
+  document.getElementById('followupsView').style.display = 'none';
+  document.getElementById('activityLogView').style.display = 'none';
+  document.getElementById('contactsView').style.display = 'block';
+  document.getElementById('tabFollowups').className = 'ghost';
+  document.getElementById('tabActivityLog').className = 'ghost';
+  document.getElementById('tabContacts').className = 'primary';
+  renderContacts();
+});
+
+function renderContacts(){
+  const list = document.getElementById('contactsList');
+  // group leads by name (case-insensitive) into one contact record each
+  const byName = new Map();
+  for(const l of state.leads){
+    const key = l.name.trim().toLowerCase();
+    if(!byName.has(key)){
+      byName.set(key, {
+        name: l.name, email:'', phone:'', linkedin:'', tags:new Set(),
+        meetingCount:0, lastMeeting: l.meetingDate, sources:new Set()
+      });
+    }
+    const c = byName.get(key);
+    if(l.email) c.email = l.email;
+    if(l.phone) c.phone = l.phone;
+    if(l.linkedin) c.linkedin = l.linkedin;
+    (l.tags||[]).forEach(t => c.tags.add(t));
+    c.sources.add(l.source);
+    c.meetingCount++;
+    if(new Date(l.meetingDate) > new Date(c.lastMeeting)) c.lastMeeting = l.meetingDate;
+  }
+  const contacts = Array.from(byName.values()).sort((a,b) => a.name.localeCompare(b.name));
+
+  if(contacts.length === 0){
+    list.innerHTML = `<div class="empty"><b>No contacts yet</b>Leads will show up here as a directory once synced or added.</div>`;
+    return;
+  }
+  list.innerHTML = contacts.map(c => `
+    <div class="log-row" style="align-items:flex-start;">
+      <div class="log-body">
+        <span class="log-name">${escapeHtml(c.name)}</span>
+        <span class="source-tag">${c.meetingCount} meeting${c.meetingCount===1?'':'s'}</span>
+        <span class="meta" style="margin-left:6px;">last: ${c.lastMeeting}</span>
+        ${(c.email || c.phone || c.linkedin) ? `<div class="contact-row">
+          ${c.email ? `<span><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></span>` : ''}
+          ${c.phone ? `<span>${escapeHtml(c.phone)}</span>` : ''}
+          ${c.linkedin ? `<span><a href="${escapeHtml(c.linkedin.startsWith('http') ? c.linkedin : 'https://' + c.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
+        </div>` : `<div class="contact-row" style="font-style:italic;">no email / phone / LinkedIn on file</div>`}
+        ${c.tags.size ? `<div class="tag-row">${Array.from(c.tags).map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+let editingLeadId = null;
+
+function renderActivityLog(){
+  const log = document.getElementById('activityLog');
+  const sorted = [...state.leads].sort((a,b) => new Date(b.meetingDate) - new Date(a.meetingDate));
+  if(sorted.length === 0){
+    log.innerHTML = `<div class="empty"><b>No activity yet</b>Once leads sync in or are added, every meeting shows up here in order.</div>`;
+    return;
+  }
+  log.innerHTML = sorted.map(l => {
+    if(l.id === editingLeadId){
+      return `
+        <div class="log-row" style="align-items:flex-start;flex-direction:column;gap:10px;">
+          <div class="row" style="width:100%;">
+            <div><label>Name</label><input type="text" class="edit-name" value="${escapeHtml(l.name)}"></div>
+            <div style="max-width:160px;"><label>Meeting date</label><input type="date" class="edit-date" value="${l.meetingDate}"></div>
+          </div>
+          <div class="row" style="width:100%;">
+            <div><label>Email</label><input type="text" class="edit-email" value="${escapeHtml(l.email||'')}"></div>
+            <div><label>Phone</label><input type="text" class="edit-phone" value="${escapeHtml(l.phone||'')}"></div>
+          </div>
+          <div class="row" style="width:100%;">
+            <div><label>LinkedIn</label><input type="text" class="edit-linkedin" value="${escapeHtml(l.linkedin||'')}"></div>
+            <div><label>Tags</label><input type="text" class="edit-tags" value="${escapeHtml((l.tags||[]).join(', '))}"></div>
+          </div>
+          <div style="width:100%;"><label>Notes</label><textarea class="edit-notes" style="min-height:70px;">${escapeHtml(l.notes||'')}</textarea></div>
+          <div class="btnrow">
+            <button class="primary" data-act="save-edit" data-id="${l.id}">Save</button>
+            <button class="ghost" data-act="cancel-edit" data-id="${l.id}">Cancel</button>
+          </div>
+        </div>
+      `;
+    }
+    return `
+    <div class="log-row">
+      <div class="log-date">${l.meetingDate}</div>
+      <div class="log-body">
+        <span class="log-name">${escapeHtml(l.name)}</span>
+        <span class="source-tag">${l.source}</span>
+        ${(l.tags && l.tags.length) ? l.tags.map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join(' ') : ''}
+        ${l.notes ? `<div class="log-notes">${escapeHtml(l.notes)}</div>` : ''}
+        ${(l.email || l.phone || l.linkedin) ? `<div class="contact-row" style="margin-top:6px;">
+          ${l.email ? `<span><a href="mailto:${escapeHtml(l.email)}">${escapeHtml(l.email)}</a></span>` : ''}
+          ${l.phone ? `<span>${escapeHtml(l.phone)}</span>` : ''}
+          ${l.linkedin ? `<span><a href="${escapeHtml(l.linkedin.startsWith('http') ? l.linkedin : 'https://' + l.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
+        </div>` : ''}
+      </div>
+      <button class="ghost" data-act="edit" data-id="${l.id}" style="flex-shrink:0;">Edit</button>
+    </div>
+  `;
+  }).join('');
+}
+
+document.getElementById('activityLog').addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const id = btn.dataset.id;
+  if(btn.dataset.act === 'edit'){
+    editingLeadId = id;
+    renderActivityLog();
+    return;
+  }
+  if(btn.dataset.act === 'cancel-edit'){
+    editingLeadId = null;
+    renderActivityLog();
+    return;
+  }
+  if(btn.dataset.act === 'save-edit'){
+    const lead = state.leads.find(l => l.id === id);
+    if(!lead) return;
+    const row = btn.closest('.log-row');
+    const payload = {
+      name: row.querySelector('.edit-name').value.trim() || lead.name,
+      meetingDate: row.querySelector('.edit-date').value || lead.meetingDate,
+      email: row.querySelector('.edit-email').value.trim(),
+      phone: row.querySelector('.edit-phone').value.trim(),
+      linkedin: row.querySelector('.edit-linkedin').value.trim(),
+      tags: row.querySelector('.edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+      notes: row.querySelector('.edit-notes').value.trim(),
+    };
+    Object.assign(lead, payload);
+    await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify(payload) });
+    editingLeadId = null;
+    renderActivityLog();
+    render(); // keep follow-ups view in sync too
+  }
+});
+
+document.getElementById('bulkMarkOverdueDone').addEventListener('click', async ()=>{
+  const overdueCount = state.leads.filter(l => l.status !== 'done' && statusFor(l) === 'overdue').length;
+  if(overdueCount === 0){ setStatus('Nothing overdue right now.', 'ok'); return; }
+  if(!confirm(`Mark all ${overdueCount} overdue lead(s) as followed up?`)) return;
+  const { marked } = await api('/api/leads/bulk-mark-overdue-done', { method:'POST' });
+  await loadState();
+  setStatus(`Marked ${marked} overdue lead(s) as followed up.`, 'ok');
+});
+
+loadState();
+</script>
+</body>
+</html>
