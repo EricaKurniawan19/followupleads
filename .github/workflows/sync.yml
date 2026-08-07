@@ -1,8 +1,9 @@
 name: Lead follow-up sync
 
+# Manual-only: the live Render deployment runs its own scheduler
+# (SYNC_CRON, see bin/serve.js) and is the source of truth for syncing.
+# Kept here for on-demand runs / debugging, not as a second scheduler.
 on:
-  schedule:
-    - cron: '0 7,15 * * *'
   workflow_dispatch: {}
 
 permissions:
