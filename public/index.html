@@ -201,10 +201,30 @@
   }
   .week-bar-track{flex:1;background:var(--surface-2);border-radius:5px;height:18px;overflow:hidden;}
   .week-bar-fill{background:var(--brass);height:100%;border-radius:5px;min-width:3px;}
+  .week-count-wrap{position:relative;width:24px;flex-shrink:0;}
   .week-count{
     font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);
-    width:24px;text-align:right;flex-shrink:0;
+    width:24px;text-align:right;display:block;cursor:default;
   }
+  .week-tooltip{
+    display:none;
+    position:absolute;right:0;bottom:calc(100% + 8px);
+    background:var(--ink);color:#FFFFFF;
+    font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;
+    padding:10px 12px;border-radius:8px;
+    min-width:200px;max-width:280px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.2);
+    z-index:20;text-align:left;
+  }
+  .week-count-wrap:hover .week-tooltip{display:block;}
+  .week-tooltip-title{
+    font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;
+    letter-spacing:0.08em;opacity:0.65;margin-bottom:6px;
+  }
+  .week-tooltip ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;}
+  .week-tooltip li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  button.ghost.danger{color:var(--rust);}
+  button.ghost.danger:hover{border-color:var(--rust);background:#FBEAE6;}
 </style>
 </head>
 <body>
@@ -402,21 +422,31 @@ function renderWeeklyActivity(){
     d.setUTCDate(d.getUTCDate() + diff);
     return d.toISOString().slice(0,10);
   }
-  const counts = new Map();
+  const byWeek = new Map();
   for(const l of state.leads){
     const wk = weekStart(l.meetingDate);
-    counts.set(wk, (counts.get(wk)||0) + 1);
+    if(!byWeek.has(wk)) byWeek.set(wk, []);
+    byWeek.get(wk).push(l);
   }
-  const weeks = Array.from(counts.entries()).sort((a,b) => new Date(b[0]) - new Date(a[0])).slice(0, 8);
-  const max = Math.max(...weeks.map(w => w[1]));
-  el.innerHTML = weeks.map(([wk, count]) => {
+  const weeks = Array.from(byWeek.entries()).sort((a,b) => new Date(b[0]) - new Date(a[0])).slice(0, 8);
+  const max = Math.max(...weeks.map(w => w[1].length));
+  el.innerHTML = weeks.map(([wk, weekLeads]) => {
     const label = new Date(wk+'T00:00:00Z').toLocaleDateString(undefined, { month:'short', day:'numeric' });
+    const count = weekLeads.length;
     const pct = Math.round((count/max)*100);
+    const sortedLeads = weekLeads.slice().sort((a,b) => new Date(b.meetingDate) - new Date(a.meetingDate));
+    const tooltipItems = sortedLeads.map(l => `<li>${escapeHtml(l.name)} &middot; ${l.meetingDate}</li>`).join('');
     return `
       <div class="week-row">
         <div class="week-label">wk of ${escapeHtml(label)}</div>
         <div class="week-bar-track"><div class="week-bar-fill" style="width:${pct}%;"></div></div>
-        <div class="week-count">${count}</div>
+        <div class="week-count-wrap">
+          <span class="week-count">${count}</span>
+          <div class="week-tooltip">
+            <div class="week-tooltip-title">wk of ${escapeHtml(label)}</div>
+            <ul>${tooltipItems}</ul>
+          </div>
+        </div>
       </div>
     `;
   }).join('');
@@ -532,6 +562,7 @@ function render(){
           ${lead.status!=='done' ? `<button data-act="done" data-id="${lead.id}">Mark followed up</button>` : `<button data-act="undo" data-id="${lead.id}">Undo</button>`}
           ${lead.status!=='done' ? `<button data-act="snooze" data-id="${lead.id}">Snooze 3 days</button>` : ''}
           <button data-act="edit" data-id="${lead.id}" class="ghost">Edit</button>
+          <button data-act="remove" data-id="${lead.id}" class="ghost danger">Didn't happen</button>
         </div>
       </div>
     `;
@@ -779,7 +810,10 @@ function renderActivityLog(){
           ${l.linkedin ? `<span><a href="${escapeHtml(l.linkedin.startsWith('http') ? l.linkedin : 'https://' + l.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
         </div>` : ''}
       </div>
-      <button class="ghost" data-act="edit" data-id="${l.id}" style="flex-shrink:0;">Edit</button>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="ghost" data-act="edit" data-id="${l.id}">Edit</button>
+        <button class="ghost danger" data-act="remove" data-id="${l.id}">Didn't happen</button>
+      </div>
     </div>
   `;
   }).join('');
@@ -804,6 +838,18 @@ async function handleEditClick(e, rerenderCurrent){
     await saveEditFromRow(row, id);
     render();
     renderActivityLog();
+    return true;
+  }
+  if(btn.dataset.act === 'remove'){
+    const lead = state.leads.find(l => l.id === id);
+    if(!lead) return true;
+    if(!confirm(`Remove "${lead.name}" (met ${lead.meetingDate})? Use this only if the meeting never actually happened — this can't be undone.`)) return true;
+    await api(`/api/leads/${id}`, { method:'DELETE' });
+    state.leads = state.leads.filter(l => l.id !== id);
+    render();
+    renderActivityLog();
+    renderContacts();
+    renderWeeklyActivity();
     return true;
   }
   return false;
