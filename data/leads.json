@@ -921,6 +921,20 @@
       "linkedin": "https://www.linkedin.com/in/somjitamitra/",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "9eb08c86-f4b8-439a-b13f-6d99080da332",
+      "name": "Matthew Choi",
+      "source": "manual",
+      "meetingDate": "2026-08-07",
+      "followUpDate": "2026-08-14",
+      "notes": "Followed up in Linkedin, about visiting his office in Palo Alto",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "meta": {
