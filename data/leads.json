@@ -907,6 +907,20 @@
       "linkedin": "",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "bb783628-9b63-43f3-9373-961c9694d6b6",
+      "name": "Somjita Mitra",
+      "source": "manual",
+      "meetingDate": "2026-08-07",
+      "followUpDate": "2026-08-14",
+      "notes": "Connect thru Sales Navigator, Send Calendly to have quick chat. California State Work",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/somjitamitra/",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "meta": {
