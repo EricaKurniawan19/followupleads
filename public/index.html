@@ -193,7 +193,7 @@
     font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--sage);
     width:120px;flex-shrink:0;
   }
-  .week-row{display:flex;align-items:center;gap:10px;}
+  .week-row{display:flex;align-items:center;gap:10px;position:relative;cursor:default;}
   .week-row + .week-row{margin-top:8px;}
   .week-label{
     font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);
@@ -216,7 +216,7 @@
     box-shadow:0 6px 18px rgba(0,0,0,0.2);
     z-index:20;text-align:left;
   }
-  .week-count-wrap:hover .week-tooltip{display:block;}
+  .week-row:hover .week-tooltip{display:block;}
   .week-tooltip-title{
     font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;
     letter-spacing:0.08em;opacity:0.65;margin-bottom:6px;
