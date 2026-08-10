@@ -933,7 +933,9 @@
       "email": "",
       "phone": "",
       "linkedin": "",
-      "tags": [],
+      "tags": [
+        "moderate"
+      ],
       "sourceKey": null
     },
     {
