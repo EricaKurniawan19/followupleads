@@ -709,6 +709,7 @@ document.getElementById('saveManual').addEventListener('click', async ()=>{
   render();
   renderContacts();
   renderActivityLog();
+  renderWeeklyActivity();
 });
 
 document.getElementById('saveSettingsBtn').addEventListener('click', async ()=>{
@@ -988,6 +989,7 @@ async function handleEditClick(e, rerenderCurrent){
     await saveEditFromRow(row, id);
     render();
     renderActivityLog();
+    renderWeeklyActivity();
     return true;
   }
   if(btn.dataset.act === 'remove'){
