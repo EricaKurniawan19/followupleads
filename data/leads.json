@@ -947,7 +947,9 @@
       "email": "finlay.amy-smith@pmalpha.co.uk",
       "phone": "",
       "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
-      "tags": [],
+      "tags": [
+        "moderate"
+      ],
       "sourceKey": null
     }
   ],
