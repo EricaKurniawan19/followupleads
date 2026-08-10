@@ -935,6 +935,20 @@
       "linkedin": "",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "0a0a43db-d23e-4d9a-a61d-77663c478fee",
+      "name": "Finlay Amy-Smith",
+      "source": "manual",
+      "meetingDate": "2026-08-07",
+      "followUpDate": "2026-08-14",
+      "notes": "Tiffany had a chat with Finlay\n- He works in a Private Equity Consulting Firm, have clients from Family Offices\n- Promised us to Provide us feedback to our deck\n- Share and talk to his clients, send like a letter (NDA)",
+      "status": "pending",
+      "email": "finlay.amy-smith@pmalpha.co.uk",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "meta": {
