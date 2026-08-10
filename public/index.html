@@ -481,6 +481,7 @@ function dueBadgeText(lead){
 let sortMode = 'followup';
 let searchQuery = '';
 let editingLeadId = null;
+let expandedFollowupKey = null;
 
 function editFormHtml(l){
   return `
@@ -531,10 +532,16 @@ function matchesSearch(name){
 function render(){
   const cards = document.getElementById('cards');
   cards.innerHTML = '';
-  const sorted = state.leads.filter(l => matchesSearch(l.name)).sort((a,b)=>{
-    if((a.status==='done') !== (b.status==='done')) return a.status==='done' ? 1 : -1;
-    if(sortMode === 'recent') return new Date(b.meetingDate) - new Date(a.meetingDate);
-    return new Date(a.followUpDate) - new Date(b.followUpDate);
+  const byName = contactsByName();
+  // one card per contact — the most recent log drives the due-badge/status
+  const entries = Array.from(byName.values())
+    .filter(c => matchesSearch(c.name))
+    .map(c => ({ c, latest: c.history[0] }));
+  const sorted = entries.sort((a,b)=>{
+    const aDone = a.latest.status==='done', bDone = b.latest.status==='done';
+    if(aDone !== bDone) return aDone ? 1 : -1;
+    if(sortMode === 'recent') return new Date(b.latest.meetingDate) - new Date(a.latest.meetingDate);
+    return new Date(a.latest.followUpDate) - new Date(b.latest.followUpDate);
   });
   if(sorted.length === 0){
     cards.innerHTML = searchQuery
@@ -542,38 +549,61 @@ function render(){
       : `<div class="empty"><b>Nothing on the ledger yet</b>Leads will appear here once the background sync runs, or add one by hand.</div>`;
     return;
   }
-  for(const lead of sorted){
-    const st = statusFor(lead);
+  for(const {c, latest} of sorted){
+    const st = statusFor(latest);
     const el = document.createElement('div');
     el.className = 'card ' + st;
-    if(lead.id === editingLeadId){
-      el.innerHTML = `<div class="card-body">${editFormHtml(lead)}</div>`;
+    if(latest.id === editingLeadId){
+      el.innerHTML = `<div class="card-body">${editFormHtml(latest)}</div>`;
       cards.appendChild(el);
       continue;
     }
+    const expanded = c.key === expandedFollowupKey;
     el.innerHTML = `
       <div class="card-body">
         <div class="card-top">
-          <div class="card-top-left">
-            <span class="lead-name">${escapeHtml(lead.name)}</span>
-            <span class="due-badge">${dueBadgeText(lead)}</span>
+          <div class="card-top-left" data-act="toggle-followup-card" data-key="${escapeHtml(c.key)}" style="cursor:pointer;">
+            <span class="lead-name">${escapeHtml(c.name)}</span>
+            <span class="due-badge">${dueBadgeText(latest)}</span>
           </div>
-          <span class="source-tag">${lead.source}</span>
+          <span class="source-tag">${latest.source}</span>
         </div>
-        <div class="meta">met ${lead.meetingDate} &middot; follow up by ${lead.followUpDate}</div>
-        ${(lead.email || lead.phone || lead.linkedin) ? `<div class="contact-row">
-          ${lead.email ? `<span><a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a></span>` : ''}
-          ${lead.phone ? `<span>${escapeHtml(lead.phone)}</span>` : ''}
-          ${lead.linkedin ? `<span><a href="${escapeHtml(lead.linkedin.startsWith('http') ? lead.linkedin : 'https://' + lead.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
+        <div class="meta" data-act="toggle-followup-card" data-key="${escapeHtml(c.key)}" style="cursor:pointer;">met ${latest.meetingDate} &middot; follow up by ${latest.followUpDate}</div>
+        ${(c.email || c.phone || c.linkedin) ? `<div class="contact-row">
+          ${c.email ? `<span><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></span>` : ''}
+          ${c.phone ? `<span>${escapeHtml(c.phone)}</span>` : ''}
+          ${c.linkedin ? `<span><a href="${escapeHtml(c.linkedin.startsWith('http') ? c.linkedin : 'https://' + c.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
         </div>` : ''}
-        ${(lead.tags && lead.tags.length) ? `<div class="tag-row">${lead.tags.map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-        ${lead.notes ? `<div class="notes">${escapeHtml(lead.notes)}</div>` : ''}
+        ${c.tags.size ? `<div class="tag-row">${Array.from(c.tags).map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        ${latest.notes ? `<div class="notes">${escapeHtml(latest.notes)}</div>` : ''}
         <div class="card-actions">
-          ${lead.status!=='done' ? `<button data-act="done" data-id="${lead.id}">Mark followed up</button>` : `<button data-act="undo" data-id="${lead.id}">Undo</button>`}
-          ${lead.status!=='done' ? `<button data-act="snooze" data-id="${lead.id}">Snooze 3 days</button>` : ''}
-          <button data-act="edit" data-id="${lead.id}" class="ghost">Edit</button>
-          <button data-act="remove" data-id="${lead.id}" class="ghost danger">Didn't happen</button>
+          ${latest.status!=='done' ? `<button data-act="done" data-id="${latest.id}">Mark followed up</button>` : `<button data-act="undo" data-id="${latest.id}">Undo</button>`}
+          ${latest.status!=='done' ? `<button data-act="snooze" data-id="${latest.id}">Snooze 3 days</button>` : ''}
+          <button data-act="edit" data-id="${latest.id}" class="ghost">Edit</button>
+          <button data-act="remove" data-id="${latest.id}" class="ghost danger">Didn't happen</button>
         </div>
+        <div class="toggle-link" data-act="toggle-followup-card" data-key="${escapeHtml(c.key)}" style="margin-top:10px;">${expanded ? '▾ Hide thread' : (c.meetingCount>1 ? `▸ ${c.meetingCount} logs — view thread & add one` : '▸ View thread & add a log')}</div>
+        ${expanded ? `
+          <div class="contact-history">
+            <div class="add-log-form">
+              <div class="row">
+                <div style="max-width:170px;"><label>Date</label><input type="date" class="new-log-date" value="${todayISO()}"></div>
+                <div><label>What happened</label><input type="text" class="new-log-notes" placeholder="Quick note about this touchpoint..."></div>
+              </div>
+              <button class="primary" data-act="add-log" data-key="${escapeHtml(c.key)}" style="margin-top:8px;">+ Add log to thread</button>
+            </div>
+            ${c.history.map(l => `
+              <div class="history-item">
+                <div class="history-item-head">
+                  <span class="history-date">${l.meetingDate}</span>
+                  <span class="source-tag">${l.source}</span>
+                  ${(l.tags && l.tags.length) ? l.tags.map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join(' ') : ''}
+                </div>
+                ${l.notes ? `<div class="history-notes">${escapeHtml(l.notes)}</div>` : `<div class="history-notes" style="font-style:italic;color:var(--ink-dim);">no notes</div>`}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
       </div>
     `;
     cards.appendChild(el);
@@ -592,16 +622,45 @@ function tagClass(t){
 }
 
 document.getElementById('cards').addEventListener('click', async (e)=>{
+  if(e.target.closest('a')) return; // let mailto:/LinkedIn links behave normally
   if(await handleEditClick(e, render)) return;
+
   const btn = e.target.closest('button[data-act]');
-  if(!btn) return;
-  const id = btn.dataset.id;
-  const lead = state.leads.find(l=>l.id===id);
-  if(!lead) return;
-  if(btn.dataset.act === 'done'){ lead.status = 'done'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'done' }) }); }
-  if(btn.dataset.act === 'undo'){ lead.status = 'pending'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'pending' }) }); }
-  if(btn.dataset.act === 'snooze'){ lead.followUpDate = addDays(lead.followUpDate, 3); await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ followUpDate: lead.followUpDate }) }); }
-  render();
+  if(btn){
+    if(btn.dataset.act === 'add-log'){
+      const key = btn.dataset.key;
+      const contact = contactsByName().get(key);
+      if(!contact) return;
+      const historyBlock = btn.closest('.contact-history');
+      const dateVal = historyBlock.querySelector('.new-log-date').value || todayISO();
+      const notesVal = historyBlock.querySelector('.new-log-notes').value.trim();
+      if(!notesVal){ alert('Add a quick note about what happened.'); return; }
+      const lead = await api('/api/leads', { method:'POST', body: JSON.stringify({
+        name: contact.name, meetingDate: dateVal, notes: notesVal,
+        email: contact.email, phone: contact.phone, linkedin: contact.linkedin, tags: []
+      })});
+      state.leads.push(lead);
+      render();
+      renderActivityLog();
+      renderContacts();
+      renderWeeklyActivity();
+      return;
+    }
+    const id = btn.dataset.id;
+    const lead = state.leads.find(l=>l.id===id);
+    if(!lead) return;
+    if(btn.dataset.act === 'done'){ lead.status = 'done'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'done' }) }); }
+    if(btn.dataset.act === 'undo'){ lead.status = 'pending'; await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ status:'pending' }) }); }
+    if(btn.dataset.act === 'snooze'){ lead.followUpDate = addDays(lead.followUpDate, 3); await api(`/api/leads/${id}`, { method:'PATCH', body: JSON.stringify({ followUpDate: lead.followUpDate }) }); }
+    render();
+    return;
+  }
+
+  const cardArea = e.target.closest('[data-act="toggle-followup-card"]');
+  if(cardArea){
+    expandedFollowupKey = expandedFollowupKey === cardArea.dataset.key ? null : cardArea.dataset.key;
+    render();
+  }
 });
 
 document.getElementById('settingsToggle').addEventListener('click', ()=>{
