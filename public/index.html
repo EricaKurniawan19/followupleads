@@ -225,6 +225,14 @@
   .week-tooltip li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   button.ghost.danger{color:var(--rust);}
   button.ghost.danger:hover{border-color:var(--rust);background:#FBEAE6;}
+  .contact-history{
+    margin-top:10px;padding-top:10px;border-top:1px dashed var(--edge);
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .history-item{padding-left:12px;border-left:2px solid var(--sage-dim);}
+  .history-item-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .history-date{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);}
+  .history-notes{font-size:13px;color:var(--ink);margin-top:4px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -259,6 +267,7 @@
       <div><label>Name / company</label><input type="text" id="mName" placeholder="Jane Cooper, Acme Co"></div>
       <div><label>Meeting date</label><input type="date" id="mDate"></div>
     </div>
+    <div id="mExistingHint" class="hint" style="display:none;margin-top:8px;"></div>
     <div class="row" style="margin-top:10px;">
       <div><label>Email</label><input type="text" id="mEmail" placeholder="jane@acme.com"></div>
       <div><label>Phone</label><input type="text" id="mPhone" placeholder="+1 555 010 2020"></div>
@@ -604,6 +613,19 @@ document.getElementById('addManual').addEventListener('click', ()=>{
 });
 document.getElementById('cancelManual').addEventListener('click', ()=>{
   document.getElementById('addPanel').style.display = 'none';
+  document.getElementById('mExistingHint').style.display = 'none';
+});
+document.getElementById('mName').addEventListener('input', (e)=>{
+  const hint = document.getElementById('mExistingHint');
+  const key = e.target.value.trim().toLowerCase();
+  if(!key){ hint.style.display = 'none'; return; }
+  const existing = contactsByName().get(key);
+  if(!existing){ hint.style.display = 'none'; return; }
+  hint.style.display = 'block';
+  hint.textContent = `✓ Existing contact — this will be added to ${existing.name}'s history (${existing.meetingCount} past log${existing.meetingCount===1?'':'s'}), not a new one.`;
+  if(existing.email && !document.getElementById('mEmail').value) document.getElementById('mEmail').value = existing.email;
+  if(existing.phone && !document.getElementById('mPhone').value) document.getElementById('mPhone').value = existing.phone;
+  if(existing.linkedin && !document.getElementById('mLinkedin').value) document.getElementById('mLinkedin').value = existing.linkedin;
 });
 document.getElementById('saveManual').addEventListener('click', async ()=>{
   const name = document.getElementById('mName').value.trim();
@@ -623,7 +645,10 @@ document.getElementById('saveManual').addEventListener('click', async ()=>{
   document.getElementById('mLinkedin').value='';
   document.getElementById('mTags').value='';
   document.getElementById('addPanel').style.display = 'none';
+  document.getElementById('mExistingHint').style.display = 'none';
   render();
+  renderContacts();
+  renderActivityLog();
 });
 
 document.getElementById('saveSettingsBtn').addEventListener('click', async ()=>{
@@ -680,9 +705,9 @@ document.getElementById('tabContacts').addEventListener('click', ()=>{
 });
 
 let editingContactKey = null;
+let expandedContactKey = null;
 
-function renderContacts(){
-  const list = document.getElementById('contactsList');
+function contactsByName(){
   // group leads by name (case-insensitive) into one contact record each
   const byName = new Map();
   for(const l of state.leads){
@@ -690,7 +715,7 @@ function renderContacts(){
     if(!byName.has(key)){
       byName.set(key, {
         key, name: l.name, email:'', phone:'', linkedin:'', tags:new Set(),
-        meetingCount:0, lastMeeting: l.meetingDate, sources:new Set()
+        meetingCount:0, lastMeeting: l.meetingDate, sources:new Set(), history:[]
       });
     }
     const c = byName.get(key);
@@ -700,8 +725,18 @@ function renderContacts(){
     (l.tags||[]).forEach(t => c.tags.add(t));
     c.sources.add(l.source);
     c.meetingCount++;
+    c.history.push(l);
     if(new Date(l.meetingDate) > new Date(c.lastMeeting)) c.lastMeeting = l.meetingDate;
   }
+  for(const c of byName.values()){
+    c.history.sort((a,b) => new Date(b.meetingDate) - new Date(a.meetingDate));
+  }
+  return byName;
+}
+
+function renderContacts(){
+  const list = document.getElementById('contactsList');
+  const byName = contactsByName();
   const contacts = Array.from(byName.values()).filter(c => matchesSearch(c.name)).sort((a,b) => a.name.localeCompare(b.name));
 
   if(contacts.length === 0){
@@ -730,26 +765,50 @@ function renderContacts(){
         </div>
       `;
     }
+    const expanded = c.key === expandedContactKey;
     return `
-    <div class="log-row" style="align-items:flex-start;">
-      <div class="log-body">
-        <span class="log-name">${escapeHtml(c.name)}</span>
-        <span class="source-tag">${c.meetingCount} meeting${c.meetingCount===1?'':'s'}</span>
-        <span class="meta" style="margin-left:6px;">last: ${c.lastMeeting}</span>
-        ${(c.email || c.phone || c.linkedin) ? `<div class="contact-row">
-          ${c.email ? `<span><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></span>` : ''}
-          ${c.phone ? `<span>${escapeHtml(c.phone)}</span>` : ''}
-          ${c.linkedin ? `<span><a href="${escapeHtml(c.linkedin.startsWith('http') ? c.linkedin : 'https://' + c.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
-        </div>` : `<div class="contact-row" style="font-style:italic;">no email / phone / LinkedIn on file</div>`}
-        ${c.tags.size ? `<div class="tag-row">${Array.from(c.tags).map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+    <div class="log-row" style="align-items:flex-start;flex-direction:column;gap:0;">
+      <div style="display:flex;align-items:flex-start;gap:14px;width:100%;">
+        <div class="log-body">
+          <span class="log-name">${escapeHtml(c.name)}</span>
+          <span class="source-tag">${c.meetingCount} meeting${c.meetingCount===1?'':'s'}</span>
+          <span class="meta" style="margin-left:6px;">last: ${c.lastMeeting}</span>
+          ${(c.email || c.phone || c.linkedin) ? `<div class="contact-row">
+            ${c.email ? `<span><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></span>` : ''}
+            ${c.phone ? `<span>${escapeHtml(c.phone)}</span>` : ''}
+            ${c.linkedin ? `<span><a href="${escapeHtml(c.linkedin.startsWith('http') ? c.linkedin : 'https://' + c.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></span>` : ''}
+          </div>` : `<div class="contact-row" style="font-style:italic;">no email / phone / LinkedIn on file</div>`}
+          ${c.tags.size ? `<div class="tag-row">${Array.from(c.tags).map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+          <div style="margin-top:8px;"><span class="toggle-link" data-act="toggle-history" data-key="${escapeHtml(c.key)}">${expanded ? 'Hide' : 'View'} past logs (${c.meetingCount})</span></div>
+        </div>
+        <button class="ghost" data-act="edit-contact" data-key="${escapeHtml(c.key)}" style="flex-shrink:0;">Edit</button>
       </div>
-      <button class="ghost" data-act="edit-contact" data-key="${escapeHtml(c.key)}" style="flex-shrink:0;">Edit</button>
+      ${expanded ? `
+        <div class="contact-history" style="width:100%;">
+          ${c.history.map(l => `
+            <div class="history-item">
+              <div class="history-item-head">
+                <span class="history-date">${l.meetingDate}</span>
+                <span class="source-tag">${l.source}</span>
+                ${(l.tags && l.tags.length) ? l.tags.map(t=>`<span class="${tagClass(t)}">${escapeHtml(t)}</span>`).join(' ') : ''}
+              </div>
+              ${l.notes ? `<div class="history-notes">${escapeHtml(l.notes)}</div>` : `<div class="history-notes" style="font-style:italic;color:var(--ink-dim);">no notes</div>`}
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
     </div>
   `;
   }).join('');
 }
 
 document.getElementById('contactsList').addEventListener('click', async (e)=>{
+  const toggle = e.target.closest('[data-act="toggle-history"]');
+  if(toggle){
+    expandedContactKey = expandedContactKey === toggle.dataset.key ? null : toggle.dataset.key;
+    renderContacts();
+    return;
+  }
   const btn = e.target.closest('button[data-act]');
   if(!btn) return;
   if(btn.dataset.act === 'edit-contact'){
