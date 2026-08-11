@@ -969,6 +969,20 @@
         "Important"
       ],
       "sourceKey": null
+    },
+    {
+      "id": "1c6f616b-2379-4396-a7d8-c2f22a549f1c",
+      "name": "Finlay Amy-Smith",
+      "source": "manual",
+      "meetingDate": "2026-08-11",
+      "followUpDate": "2026-08-18",
+      "notes": "Sent a follow up message, saying thank u for meeting Tiffany and send Tiffany's email for feedbacks to deck",
+      "status": "pending",
+      "email": "finlay.amy-smith@pmalpha.co.uk",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "meta": {
