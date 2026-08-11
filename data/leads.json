@@ -953,6 +953,22 @@
         "moderate"
       ],
       "sourceKey": null
+    },
+    {
+      "id": "278363bf-f295-47f9-badd-3818bc44dab5",
+      "name": "Alex Bell / Nofense",
+      "source": "manual",
+      "meetingDate": "2026-08-11",
+      "followUpDate": "2026-08-18",
+      "notes": "Replied Henry's linkedIn message (Agriculture sector), invited him for a call\n\nHi Henry,\nWe do use ML/Al in our product development but l am always eager to learn from what you are offering to share.",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/alexfbell/",
+      "tags": [
+        "Important"
+      ],
+      "sourceKey": null
     }
   ],
   "meta": {
