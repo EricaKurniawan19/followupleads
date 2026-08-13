@@ -983,6 +983,20 @@
       "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "ff47378b-fdc4-407b-a3d4-e97d993a16da",
+      "name": "Finlay Amy-Smith",
+      "source": "manual",
+      "meetingDate": "2026-08-12",
+      "followUpDate": "2026-08-19",
+      "notes": "Finlay has responded, he also have contacted the client mentioned during call with Tiffany",
+      "status": "pending",
+      "email": "finlay.amy-smith@pmalpha.co.uk",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "meta": {
