@@ -100,15 +100,30 @@ app.post('/api/leads/bulk-mark-overdue-done', async (req, res) => {
 
 app.get('/api/upcoming', async (req, res) => {
   try {
+    const state = store.getState();
     const upcoming = await fetchUpcomingExternalMeetings(config.calendar, {
       companyDomain: config.companyDomain,
       daysAhead: 14,
+      ignoredEventIds: state.ignoredMeetings,
     });
     res.json(upcoming);
   } catch (err) {
     console.error('[api] upcoming fetch failed:', err);
     res.status(500).json({ error: err.message });
   }
+});
+
+app.post('/api/upcoming/ignore', async (req, res) => {
+  const state = store.getState();
+  const { eventId } = req.body;
+  if (!eventId || !String(eventId).trim()) {
+    return res.status(400).json({ error: 'eventId is required' });
+  }
+  if (!state.ignoredMeetings.includes(eventId)) {
+    state.ignoredMeetings.push(eventId);
+    await store.save();
+  }
+  res.status(204).end();
 });
 
 app.post('/api/sync', async (req, res) => {
