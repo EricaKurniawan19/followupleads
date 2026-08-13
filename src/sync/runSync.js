@@ -18,6 +18,7 @@ async function runSync() {
     fetchCalendarLeads(config.calendar, {
       companyDomain: config.companyDomain,
       since: state.meta.lastCalendarSyncAt,
+      ignoredEventIds: state.ignoredMeetings,
     }).catch((err) => {
       console.error('[sync] Calendar sync failed:', err.message);
       return [];
