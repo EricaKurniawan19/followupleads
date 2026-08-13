@@ -407,10 +407,11 @@ async function loadUpcoming(){
       return `
         <div class="upcoming-row">
           <div class="upcoming-when">${escapeHtml(whenStr)}</div>
-          <div>
+          <div style="flex:1;min-width:0;">
             <div class="lead-name" style="font-size:15px;">${escapeHtml(names)}</div>
             <div class="meta">${escapeHtml(m.summary)}</div>
           </div>
+          <button class="ghost danger" data-act="ignore-upcoming" data-id="${escapeHtml(m.id)}" style="flex-shrink:0;">Ignore</button>
         </div>
       `;
     }).join('');
@@ -418,6 +419,15 @@ async function loadUpcoming(){
     panel.innerHTML = `<div class="empty">Couldn't check calendar: ${escapeHtml(err.message)}</div>`;
   }
 }
+
+document.getElementById('upcomingPanel').addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-act="ignore-upcoming"]');
+  if(!btn) return;
+  if(!confirm("Ignore this meeting? It won't show up here again, and even once it's happened it won't be logged as an activity.")) return;
+  btn.disabled = true;
+  await api('/api/upcoming/ignore', { method:'POST', body: JSON.stringify({ eventId: btn.dataset.id }) });
+  loadUpcoming();
+});
 
 function renderWeeklyActivity(){
   const el = document.getElementById('weeklyActivity');
