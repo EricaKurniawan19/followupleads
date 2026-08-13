@@ -16,13 +16,15 @@ function eventHasAttendee(event, email) {
  * separate from the network call so the filtering rules are unit-testable
  * without live credentials.
  */
-function eventsToLeads(events, { companyDomain, excludeEmails = [], requireAttendee = '', now = new Date() }) {
+function eventsToLeads(events, { companyDomain, excludeEmails = [], requireAttendee = '', now = new Date(), ignoredEventIds = [] }) {
   const domain = (companyDomain || '').toLowerCase();
   const excluded = new Set(excludeEmails.map((e) => e.toLowerCase()));
+  const ignored = new Set(ignoredEventIds);
   const leads = [];
 
   for (const event of events || []) {
     if (event.status === 'cancelled') continue;
+    if (ignored.has(event.id)) continue;
     if (!eventHasAttendee(event, requireAttendee)) continue;
 
     const endIso = event.end && event.end.dateTime;
@@ -116,11 +118,11 @@ function dedupeById(events) {
  * @param {object} calendarConfig - { clientId, clientSecret, refreshToken, redirectUri }
  * @param {object} opts - { companyDomain, since }
  */
-async function fetchCalendarLeads(calendarConfig, { companyDomain, since } = {}) {
+async function fetchCalendarLeads(calendarConfig, { companyDomain, since, ignoredEventIds } = {}) {
   const { clientId, clientSecret, refreshToken, excludeEmails, requireAttendee } = calendarConfig || {};
   if (!clientId || !clientSecret || !refreshToken) return [];
   const events = await listCompletedEvents(calendarConfig, { since });
-  return eventsToLeads(events, { companyDomain, excludeEmails, requireAttendee });
+  return eventsToLeads(events, { companyDomain, excludeEmails, requireAttendee, ignoredEventIds });
 }
 
 /**
@@ -128,13 +130,15 @@ async function fetchCalendarLeads(calendarConfig, { companyDomain, since } = {})
  * Informational only — these are never turned into leads (nothing to follow
  * up on until the meeting has actually happened).
  */
-function upcomingExternalMeetings(events, { companyDomain, excludeEmails = [], requireAttendee = '', now = new Date() }) {
+function upcomingExternalMeetings(events, { companyDomain, excludeEmails = [], requireAttendee = '', now = new Date(), ignoredEventIds = [] }) {
   const domain = (companyDomain || '').toLowerCase();
   const excluded = new Set(excludeEmails.map((e) => e.toLowerCase()));
+  const ignored = new Set(ignoredEventIds);
   const results = [];
 
   for (const event of events || []) {
     if (event.status === 'cancelled') continue;
+    if (ignored.has(event.id)) continue;
     if (!eventHasAttendee(event, requireAttendee)) continue;
 
     const startIso = event.start && event.start.dateTime;
@@ -148,6 +152,7 @@ function upcomingExternalMeetings(events, { companyDomain, excludeEmails = [], r
     if (external.length === 0) continue;
 
     results.push({
+      id: event.id,
       summary: event.summary || '(no title)',
       startTime: startIso,
       attendees: external.map((a) => ({ name: a.displayName || a.email, email: a.email })),
@@ -173,11 +178,11 @@ async function listUpcomingEvents(calendarConfig, { daysAhead = 14 } = {}) {
   return dedupeById(events);
 }
 
-async function fetchUpcomingExternalMeetings(calendarConfig, { companyDomain, daysAhead } = {}) {
+async function fetchUpcomingExternalMeetings(calendarConfig, { companyDomain, daysAhead, ignoredEventIds } = {}) {
   const { clientId, clientSecret, refreshToken, excludeEmails, requireAttendee } = calendarConfig || {};
   if (!clientId || !clientSecret || !refreshToken) return [];
   const events = await listUpcomingEvents(calendarConfig, { daysAhead });
-  return upcomingExternalMeetings(events, { companyDomain, excludeEmails, requireAttendee });
+  return upcomingExternalMeetings(events, { companyDomain, excludeEmails, requireAttendee, ignoredEventIds });
 }
 
 module.exports = {
