@@ -999,6 +999,9 @@
       "sourceKey": null
     }
   ],
+  "ignoredMeetings": [
+    "2sq6ci3j4aouljft2irvh670bk"
+  ],
   "meta": {
     "lastCapsuleSyncAt": "2026-08-10T06:20:42.262Z",
     "lastCalendarSyncAt": "2026-08-10T06:20:42.262Z",
