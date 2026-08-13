@@ -37,6 +37,7 @@ function emptyState() {
   return {
     settings: { followUpDays: config.followUpDays },
     leads: [],
+    ignoredMeetings: [],
     meta: {
       lastCapsuleSyncAt: null,
       lastCalendarSyncAt: null,
