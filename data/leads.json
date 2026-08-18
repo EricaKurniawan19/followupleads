@@ -997,6 +997,22 @@
       "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "b0801769-f882-44aa-907d-4a2cd4b7d159",
+      "name": "David Mullenbach",
+      "source": "manual",
+      "meetingDate": "2026-08-14",
+      "followUpDate": "2026-08-21",
+      "notes": "Investment Management Analyst at Morgan Stanley , replied Tiffany on Linkedin; asking does the AI cover all jurisdictions in terms of data analytics or what is your current reach. All very interesting thank you. Already Replied by Tiffany",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/david-mullenbach-4a4748223/",
+      "tags": [
+        "moderate"
+      ],
+      "sourceKey": null
     }
   ],
   "ignoredMeetings": [
