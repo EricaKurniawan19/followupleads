@@ -1013,6 +1013,20 @@
         "moderate"
       ],
       "sourceKey": null
+    },
+    {
+      "id": "c335ae32-b509-4db5-8e74-5577278c0373",
+      "name": "Matthew Choi",
+      "source": "manual",
+      "meetingDate": "2026-08-18",
+      "followUpDate": "2026-08-25",
+      "notes": "He replied basically cannot meet Tiffany and not something his team is focusing on",
+      "status": "pending",
+      "email": "matthew.choi@abven.com",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "ignoredMeetings": [
