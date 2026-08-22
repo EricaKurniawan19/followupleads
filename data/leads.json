@@ -1027,6 +1027,20 @@
       "linkedin": "",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "4355d93e-b897-41eb-8820-ebb0114340f6",
+      "name": "Finlay Amy-Smith",
+      "source": "manual",
+      "meetingDate": "2026-08-21",
+      "followUpDate": "2026-08-28",
+      "notes": "He sent feedbacks, and we send him back our updated deck revised with his comments",
+      "status": "pending",
+      "email": "finlay.amy-smith@pmalpha.co.uk",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "ignoredMeetings": [
