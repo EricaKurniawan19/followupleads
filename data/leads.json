@@ -1041,6 +1041,20 @@
       "linkedin": "https://www.linkedin.com/in/finlay-amy-smith/",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "58e2a39c-f7a2-4460-9e91-a41959f19a1b",
+      "name": "Alex Bell / Nofense",
+      "source": "manual",
+      "meetingDate": "2026-08-18",
+      "followUpDate": "2026-08-25",
+      "notes": "Henry has followed up",
+      "status": "pending",
+      "email": "",
+      "phone": "",
+      "linkedin": "https://www.linkedin.com/in/alexfbell/",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "ignoredMeetings": [
