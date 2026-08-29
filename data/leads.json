@@ -1055,6 +1055,20 @@
       "linkedin": "https://www.linkedin.com/in/alexfbell/",
       "tags": [],
       "sourceKey": null
+    },
+    {
+      "id": "a6387e32-e018-4168-9c66-8e0a0b7bbbe1",
+      "name": "Alejandro Cercio",
+      "source": "manual",
+      "meetingDate": "2026-08-29",
+      "followUpDate": "2026-09-05",
+      "notes": "Palm Drive VC, Tiffany had a meeting with Alejandro. He said, good match in terms of round (check size is < 1Mil, interested in our sector) but they dont like the fact that 13k are free users, they dont have threshold for revenue, they want to match the raising with revenue ratio. Raising a lot of money but sales revenue is small which is not good",
+      "status": "pending",
+      "email": "alejandro@palmdrive.vc",
+      "phone": "",
+      "linkedin": "",
+      "tags": [],
+      "sourceKey": null
     }
   ],
   "ignoredMeetings": [
