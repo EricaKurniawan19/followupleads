@@ -142,44 +142,6 @@ in the YAML.
 | POST | `/api/leads/bulk-mark-overdue-done` | mark all overdue leads followed up |
 | POST | `/api/sync` | trigger a sync pass on demand |
 
-## Company website enrichment (`bin/enrich-company-websites.js`)
-
-A standalone tool for filling in real company website links on a scraped
-contact-list CSV, unrelated to the sync/scheduler above — useful when a
-LinkedIn export's "website" column actually holds Sales Navigator company
-page links instead of a real URL.
-
-Expects rows (no header) in this order: `First Name, Last Name, Job Title,
-Tenure, Company Name, Company Location, LinkedIn Profile Link, LinkedIn
-Company Page`. For each row's `Company Name` it looks up a real domain via
-Clearbit's free, unauthenticated company-autocomplete endpoint, caching by
-company name so a file with many repeated employers only costs one lookup
-per unique company.
-
-**Must be run somewhere with normal internet access** — it calls
-`autocomplete.clearbit.com` directly, which sandboxed/egress-restricted
-environments (like Claude Code's own remote sessions) typically block.
-
-```bash
-# test on a small slice first
-node bin/enrich-company-websites.js contacts.csv --limit=50
-
-# full run (resumable — cached lookups are skipped on re-run)
-node bin/enrich-company-websites.js contacts.csv --out=contacts.enriched.csv
-```
-
-Options: `--out=<path>` (default `<input>.enriched.csv`), `--cache=<path>`
-(default `data/enrichment/company-domain-cache.json`), `--limit=<n>`
-(only resolve the first n new companies, for a test run), `--concurrency=<n>`
-(default 4).
-
-Output adds two columns: `Resolved Website` and `Resolution Confidence`
-(`exact` — name matched a suggestion exactly; `fuzzy` — took the top
-suggestion for a non-exact name match; `unresolved` — no match found, left
-blank). Free-tier coverage won't be 100%; unresolved rows need a manual
-pass or a paid enrichment API (Clearbit, Apollo, Hunter, PeopleDataLabs)
-for full coverage.
-
 ## Tests
 
 ```bash

@@ -13,7 +13,6 @@
     "sync": "node bin/sync-once.js",
     "schedule": "node bin/schedule.js",
     "get-google-token": "node bin/get-google-token.js",
-    "enrich-websites": "node bin/enrich-company-websites.js",
     "test": "node --test"
   },
   "dependencies": {
